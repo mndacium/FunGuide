@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace FunGuide.Shared
 {
-    public class Sportsman
+    public class Sportsman:BaseEntity
     {
-        public int Id { get; set; }
         public string FirstName { get; set; }=String.Empty;
         public string LastName { get; set; }= String.Empty;
         public DateTime? BirthDate { get; set; }

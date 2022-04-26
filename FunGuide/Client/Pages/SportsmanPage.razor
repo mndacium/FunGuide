@@ -1,0 +1,84 @@
+﻿@page "/sportsman"
+@page "/sportsman/{id:int}"
+@inject ISportsmanService SportsmanService
+@if (Id == null)
+{
+    <PageTitle>Add new sportsman</PageTitle>
+    <h1>Добавте нового спортсмена до вашого довідника </h1>
+}
+else
+{
+    <PageTitle>Edit sportsman</PageTitle>
+        <h1>Edit  @sportsman.FirstName @sportsman.LastName</h1>
+}
+<EditForm Model="sportsman" OnSubmit="HandleSubmit">
+   <div class="col-6">
+       <label>First name</label>
+       <InputText id="firstName" @bind-Value="sportsman.FirstName" class="form-control" ></InputText>
+   </div>
+   <div class="col-6">
+       <label>Last name</label>
+       <InputText id="lastName" @bind-Value="sportsman.LastName" class="form-control" ></InputText>
+   </div>
+   <div class="col-6">
+       <label>Birth date</label>
+       <InputDate id="birthDate" @bind-Value="sportsman.BirthDate" class="form-control" ></InputDate>
+   </div>
+   <div class="col-6">
+       <label>Age</label>
+       <InputNumber id="age" @bind-Value="sportsman.Age" class="form-control" ></InputNumber>
+   </div>
+    <div class="col-6">
+       <label>Height</label>
+       <InputNumber id="height" @bind-Value="sportsman.Height" class="form-control" ></InputNumber>
+   </div> 
+   <div class="col-6">
+       <label>Weight</label>
+       <InputNumber id="weight" @bind-Value="sportsman.Weight" class="form-control" ></InputNumber>
+   </div> 
+    <div class="col-6">
+       <label>Сitizenship</label>
+       <InputText id="Сitizenship" @bind-Value="sportsman.Сitizenship" class="form-control" ></InputText>
+   </div>
+   <div class="col-6">
+       <label>Sport</label>
+       <InputSelect id="sport" @bind-Value="sportsman.Sport" class="form-select">
+            @foreach(var sport in SportsmanService.Sports)
+            {
+                <option value="@sport.Id">@sport.Name</option>
+            }
+        </InputSelect>
+   </div>
+   <br/>
+   <button type="submit" class="btn btn-primary">@btnText</button>
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    string btnText = string.Empty;
+    Sportsman sportsman = new Sportsman { Sport = new Sport() };
+    protected override async void OnInitialized()
+    {
+        btnText = Id == null ? "Зберегти нового спортсмена" : "Змінити дані спортсмена";
+        await SportsmanService.GetSport();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == null)
+        {
+            //create
+        }
+        else
+        {
+            sportsman = await SportsmanService.GetSingleSportsman((int)Id);
+
+        }
+    }
+    async Task HandleSubmit()
+    {
+        
+    }
+}

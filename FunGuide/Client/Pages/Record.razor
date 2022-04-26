@@ -1,47 +1,7 @@
 ﻿@page "/record"
 <h3>Record</h3>
 
-@foreach(var sportsman in sportsmen)
-{
-    <h2>@sportsman.Сitizenship  </h2>
-}
-@code {
-    public static List<Sportsman> sportsmen = new()
-        {
-                new Sportsman
-                {
-                        Id =1,
-                        FirstName="Vlad",
-                        LastName ="Tanasiichuk",
-                        BirthDate = DateTime.Today,
-                        Age = 22,
-                        Height = 1.82,
-                        Weight = 75.8,
-                        Сitizenship=null,
 
-                },
-                new Sportsman
-                {
-                        Id =2,
-                        FirstName="Loh",
-                        LastName ="Uebok",
-                        BirthDate = DateTime.Today,
-                        Age = 12,
-                        Height = 1.32,
-                        Weight = 45.2,
-                        Сitizenship="Russian",
-                 },
-                 new Sportsman
-                 {
-                        Id =3,
-                        FirstName="Andrey",
-                        LastName ="Huila",
-                        BirthDate = DateTime.Today,
-                        Age = 19,
-                        Height = 1.65,
-                        Weight = 65,
-                        Сitizenship="Russian",
-                        Team  ="Arsenal"
-                 }
-        };
+@code {
+    
 }

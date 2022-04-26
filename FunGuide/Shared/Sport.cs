@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FunGuide.Shared
 {
-    public class Sport
+    public class Sport:BaseEntity
     {
-        public int Id { get; set; }
+
         public string Name { get; set; }=String.Empty;
         public Sportsman? RecordHolder { get; set; }
         public int RecordHolderId { get; set; }

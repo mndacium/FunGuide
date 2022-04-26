@@ -23,7 +23,7 @@ namespace FunGuide.Server.Controllers
              Id = 1,
              FirstName = "Vlad",
              LastName = "Tanasiichuk",
-             BirthDate = DateTime.Today,
+             BirthDate = null,
              Age = 22,
              Height = 1.82,
              Weight = 75.8,
@@ -63,8 +63,11 @@ namespace FunGuide.Server.Controllers
             }
           return Ok(sportsman);
         }
+        [HttpGet("sports")]
 
-
-
+        public async Task<ActionResult<List<Sport>>> GetSports()
+        {
+            return Ok(sports);
+        }
     }
 }
