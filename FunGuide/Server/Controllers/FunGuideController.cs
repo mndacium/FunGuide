@@ -1,5 +1,7 @@
 ﻿using FunGuide.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+
 
 namespace FunGuide.Server.Controllers
 {
@@ -7,50 +9,62 @@ namespace FunGuide.Server.Controllers
     [ApiController]
     public class FunGuideController : ControllerBase
     {
-        public static List<Sportsman> sportsmen = new List<Sportsman>
-        {
-                new Sportsman
-                {
-                        Id =1,
-                        FirstName="Vlad",
-                        LastName ="Tanasiichuk",
-                        BirthDate = DateTime.Today,
-                        Age = 22,
-                        Height = 1.82,
-                        Weight = 75.8,
-                        Сitizenship=null,
-                },
-                new Sportsman
-                {
-                        Id =2,
-                        FirstName="Loh",
-                        LastName ="Uebok",
-                        BirthDate = DateTime.Today,
-                        Age = 12,
-                        Height = 1.32,
-                        Weight = 45.2,
-                        Сitizenship="Russian",
-                 },
-                 new Sportsman
-                 {
-                        Id =3,
-                        FirstName="Andrey",
-                        LastName ="Huila",
-                        BirthDate = DateTime.Today,
-                        Age = 19,
-                        Height = 1.65,
-                        Weight = 65,
-                        Сitizenship="Russian",
-                        Sport = sports[0],
-                        Team  ="Arsenal"
-                 }
-        };
-
         public static List<Sport> sports = new List<Sport>
         {
             new Sport
-            {Id=1,Name="Football",RecordHolder = sportsmen[0]},
+            {Id=1,Name="Football"},
+            new Sport
+            { Id = 2, Name = "MMA"}
         };
+
+        public static List<Sportsman> sportsmen = new List<Sportsman> {
+            new Sportsman
+            {
+             Id = 1,
+             FirstName = "Vlad",
+             LastName = "Tanasiichuk",
+             BirthDate = DateTime.Today,
+             Age = 22,
+             Height = 1.82,
+             Weight = 75.8,
+             Сitizenship = "Ukrainian",
+             Sport = sports[1]
+            },
+            new Sportsman
+            {
+             Id = 2,
+             FirstName = "Andrey",
+             LastName = "Huila",
+             BirthDate = DateTime.Today,
+             Age = 21,
+             Height = 1.8,
+             Weight = 75.3,
+             Сitizenship = "Ukrainian",
+             Sport = sports[0]
+            },
+
+        };
+        
+
+
+        [HttpGet]
+        public async Task<ActionResult<List<Sportsman>>> GetSportsmen()
+        {
+            return Ok(sportsmen);
+        }
+        [HttpGet("{id}")]
+        
+        public async Task<ActionResult<Sportsman>> GetSingleSportsman(int id)
+        {
+            var sportsman = sportsmen.FirstOrDefault(s => s.Id == id);
+            if (sportsman == null)
+            {
+                return NotFound("Sorry sportsman not found");
+            }
+          return Ok(sportsman);
+        }
+
+
 
     }
 }

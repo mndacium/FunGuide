@@ -11,7 +11,7 @@ namespace FunGuide.Shared
         public int Id { get; set; }
         public string FirstName { get; set; }=String.Empty;
         public string LastName { get; set; }= String.Empty;
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public int Age { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
