@@ -42,6 +42,10 @@
             
         }
     </tbody>
+       <NavLink class="nav-link" href="/sportsman" Match="NavLinkMatch.All">
+   <button type="submit" class="btn btn-primary" @onclick="CreateSportsman">Додати спортсмена до бази</button>
+       
+   </NavLink>
 
 </table>
 
@@ -53,9 +57,14 @@
 
     protected override async Task OnInitializedAsync(){
         await SportsmanService.GetSportsmen();
+        await SportsmanService.GetSport();
     }
     void ShowHero(int id)
     {
         navigationManager.NavigateTo($"/sportsman/{id}");
+    }
+    void CreateSportsman()
+    {
+        navigationManager.NavigateTo("/sportsman");
     }
 }

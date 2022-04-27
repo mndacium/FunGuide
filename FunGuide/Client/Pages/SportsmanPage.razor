@@ -42,15 +42,20 @@ else
    </div>
    <div class="col-6">
        <label>Sport</label>
-       <InputSelect id="sport" @bind-Value="sportsman.Sport" class="form-select">
+       <InputSelect id="sport" @bind-Value="sportsman.SportId" class="form-select">
             @foreach(var sport in SportsmanService.Sports)
             {
                 <option value="@sport.Id">@sport.Name</option>
             }
         </InputSelect>
    </div>
+   <div class="col-6">
+       <label>Team</label>
+       <InputText id="team" @bind-Value="sportsman.Team" class="form-control"></InputText>
+   </div>
    <br/>
    <button type="submit" class="btn btn-primary">@btnText</button>
+   <button type="button" class = "btn btn-danger" @onclick="DeleteSportsman">Видалити спортсмена</button>
 </EditForm>
 
 
@@ -59,7 +64,7 @@ else
     [Parameter]
     public int? Id { get; set; }
     string btnText = string.Empty;
-    Sportsman sportsman = new Sportsman { Sport = new Sport() };
+    Sportsman sportsman = new Sportsman {Sport=new Sport()};
     protected override async void OnInitialized()
     {
         btnText = Id == null ? "Зберегти нового спортсмена" : "Змінити дані спортсмена";
@@ -69,16 +74,27 @@ else
     {
         if (Id == null)
         {
-            //create
+            sportsman.Sport = SportsmanService.Sports[0];
+            sportsman.SportId = sportsman.Sport.Id;
         }
         else
         {
             sportsman = await SportsmanService.GetSingleSportsman((int)Id);
-
         }
     }
     async Task HandleSubmit()
     {
-        
+        if (Id == null)
+        {
+            await SportsmanService.CreateSportsman(sportsman);
+        }
+        else
+        {
+            await SportsmanService.UpdateSportsman(sportsman);
+        }
+    }
+    async Task DeleteSportsman()
+    {
+        await SportsmanService.DeleteSportsman(sportsman.Id);
     }
 }

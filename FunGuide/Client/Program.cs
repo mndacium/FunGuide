@@ -1,5 +1,7 @@
 global using FunGuide.Shared;
 global using FunGuide.Client.Services.SportsmanServices;
+global using Microsoft.EntityFrameworkCore;
+
 using FunGuide.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

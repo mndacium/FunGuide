@@ -10,7 +10,6 @@ namespace FunGuide.Shared
     {
 
         public string Name { get; set; }=String.Empty;
-        public Sportsman? RecordHolder { get; set; }
-        public int RecordHolderId { get; set; }
+
     }
 }
