@@ -34,7 +34,7 @@ namespace FunGuide.Server.Migrations
                     Age = table.Column<int>(type: "int", nullable: false),
                     Height = table.Column<double>(type: "float", nullable: false),
                     Weight = table.Column<double>(type: "float", nullable: false),
-                    Сitizenship = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Citizenship = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SportId = table.Column<int>(type: "int", nullable: false),
                     Team = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -61,12 +61,12 @@ namespace FunGuide.Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "Sportsmen",
-                columns: new[] { "Id", "Age", "BirthDate", "FirstName", "Height", "LastName", "SportId", "Team", "Weight", "Сitizenship" },
+                columns: new[] { "Id", "Age", "BirthDate", "FirstName", "Height", "LastName", "SportId", "Team", "Weight", "Citizenship" },
                 values: new object[] { 1, 22, null, "Vlad", 1.8200000000000001, "Tanasiichuk", 1, null, 75.799999999999997, "Ukrainian" });
 
             migrationBuilder.InsertData(
                 table: "Sportsmen",
-                columns: new[] { "Id", "Age", "BirthDate", "FirstName", "Height", "LastName", "SportId", "Team", "Weight", "Сitizenship" },
+                columns: new[] { "Id", "Age", "BirthDate", "FirstName", "Height", "LastName", "SportId", "Team", "Weight", "Citizenship" },
                 values: new object[] { 2, 21, new DateTime(2022, 4, 26, 0, 0, 0, 0, DateTimeKind.Local), "Andrey", 1.8, "Huila", 2, null, 75.299999999999997, "Ukrainian" });
 
             migrationBuilder.CreateIndex(

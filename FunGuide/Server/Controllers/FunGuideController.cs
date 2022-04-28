@@ -15,6 +15,7 @@ namespace FunGuide.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<List<Sportsman>>> CreateSportsman(Sportsman sportsman)
         {
+            
             sportsman.Sport = null;
             _context.Add(sportsman);
             await _context.SaveChangesAsync();
@@ -50,6 +51,7 @@ namespace FunGuide.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Sportsman>>> UpdateSportsman(Sportsman sportsman,int id)
         {
+
             var dbSportsman = await _context.Sportsmen.Include(s=>s.Sport).FirstOrDefaultAsync(h => h.Id == id);
             if (dbSportsman == null)
             {
@@ -59,7 +61,7 @@ namespace FunGuide.Server.Controllers
             dbSportsman.LastName = sportsman.LastName;
             dbSportsman.Age = sportsman.Age;
             dbSportsman.BirthDate = sportsman.BirthDate;
-            dbSportsman.Сitizenship = sportsman.Сitizenship;
+            dbSportsman.Citizenship = sportsman.Citizenship;
             dbSportsman.Height = sportsman.Height;
             dbSportsman.Weight = sportsman.Weight;
             dbSportsman.SportId = sportsman.SportId;
@@ -79,7 +81,9 @@ namespace FunGuide.Server.Controllers
             _context.Sportsmen.Remove(dbSportsman);
             await _context.SaveChangesAsync();
             return Ok(await GetDbSportsmen());
+            
         }
+        
 
         public async Task<List<Sportsman>> GetDbSportsmen()
         {

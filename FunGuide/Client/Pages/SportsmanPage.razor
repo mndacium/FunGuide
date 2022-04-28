@@ -11,34 +11,48 @@ else
     <PageTitle>Edit sportsman</PageTitle>
         <h1>Edit  @sportsman.FirstName @sportsman.LastName</h1>
 }
-<EditForm Model="sportsman" OnSubmit="HandleSubmit">
+<EditForm Model="@sportsman" OnSubmit="HandleSubmit">
+    <DataAnnotationsValidator/>
    <div class="col-6">
        <label>First name</label>
        <InputText id="firstName" @bind-Value="sportsman.FirstName" class="form-control" ></InputText>
+       <ValidationMessage For="@(()=>sportsman.FirstName)"></ValidationMessage>
    </div>
    <div class="col-6">
        <label>Last name</label>
        <InputText id="lastName" @bind-Value="sportsman.LastName" class="form-control" ></InputText>
+       <ValidationMessage For="@(()=>sportsman.LastName)"></ValidationMessage>
+
    </div>
    <div class="col-6">
        <label>Birth date</label>
        <InputDate id="birthDate" @bind-Value="sportsman.BirthDate" class="form-control" ></InputDate>
+       <ValidationMessage For="@(()=>sportsman.BirthDate)"></ValidationMessage>
+
    </div>
    <div class="col-6">
        <label>Age</label>
        <InputNumber id="age" @bind-Value="sportsman.Age" class="form-control" ></InputNumber>
+       <ValidationMessage For="@(()=>sportsman.Age)"></ValidationMessage>
+
    </div>
     <div class="col-6">
        <label>Height</label>
        <InputNumber id="height" @bind-Value="sportsman.Height" class="form-control" ></InputNumber>
+       <ValidationMessage For="@(()=>sportsman.Height)"></ValidationMessage>
+
    </div> 
    <div class="col-6">
        <label>Weight</label>
        <InputNumber id="weight" @bind-Value="sportsman.Weight" class="form-control" ></InputNumber>
+       <ValidationMessage For="@(()=>sportsman.Weight)"></ValidationMessage>
+
    </div> 
     <div class="col-6">
-       <label>Сitizenship</label>
-       <InputText id="Сitizenship" @bind-Value="sportsman.Сitizenship" class="form-control" ></InputText>
+       <label>Citizenship</label>
+       <InputText id="Citizenship" @bind-Value="sportsman.Citizenship" class="form-control" ></InputText>
+       <ValidationMessage For="@(()=>sportsman.Citizenship)"></ValidationMessage>
+
    </div>
    <div class="col-6">
        <label>Sport</label>
@@ -48,10 +62,14 @@ else
                 <option value="@sport.Id">@sport.Name</option>
             }
         </InputSelect>
+       <ValidationMessage For="@(()=>sportsman.Sport)"></ValidationMessage>
+
    </div>
    <div class="col-6">
        <label>Team</label>
        <InputText id="team" @bind-Value="sportsman.Team" class="form-control"></InputText>
+       <ValidationMessage For="@(()=>sportsman.Team)"></ValidationMessage>
+
    </div>
    <br/>
    <button type="submit" class="btn btn-primary">@btnText</button>

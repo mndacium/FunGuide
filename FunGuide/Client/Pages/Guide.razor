@@ -3,9 +3,7 @@
 @inject NavigationManager navigationManager;
 
 <PageTitle>Довідник фаната</PageTitle>
-
-<h1>Hello, world!</h1>
-<p>@date</p>
+<h1>База </h1>
 
 <table class="table">
     <thead >
@@ -34,7 +32,7 @@
                 <td>@sportsman.Age років</td>
                 <td>@sportsman.Height м</td>
                 <td>@sportsman.Weight кг</td>
-                <td>@sportsman.Сitizenship</td>
+                <td>@sportsman.Citizenship</td>
                 <td>@sportsman.Sport.Name</td>
                 <td>@sportsman.Team</td> 
                 <button class="btn btn-primary" @onclick="(()=>ShowHero(sportsman.Id))"><i class="oi oi-pencil"></i></button>

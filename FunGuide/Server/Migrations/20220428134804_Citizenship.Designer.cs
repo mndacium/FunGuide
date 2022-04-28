@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FunGuide.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220426175346_SportsmanMigration")]
-    partial class SportsmanMigration
+    [Migration("20220428134804_Citizenship")]
+    partial class Citizenship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -67,28 +67,31 @@ namespace FunGuide.Server.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Citizenship")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<double>("Height")
                         .HasColumnType("float");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("SportId")
                         .HasColumnType("int");
 
                     b.Property<string>("Team")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
-
-                    b.Property<string>("Citizenship")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -101,24 +104,24 @@ namespace FunGuide.Server.Migrations
                         {
                             Id = 1,
                             Age = 22,
+                            Citizenship = "Ukrainian",
                             FirstName = "Vlad",
                             Height = 1.8200000000000001,
                             LastName = "Tanasiichuk",
                             SportId = 1,
-                            Weight = 75.799999999999997,
-                            Citizenship = "Ukrainian"
+                            Weight = 75.799999999999997
                         },
                         new
                         {
                             Id = 2,
                             Age = 21,
-                            BirthDate = new DateTime(2022, 4, 26, 0, 0, 0, 0, DateTimeKind.Local),
+                            BirthDate = new DateTime(2022, 4, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            Citizenship = "Ukrainian",
                             FirstName = "Andrey",
                             Height = 1.8,
                             LastName = "Huila",
                             SportId = 2,
-                            Weight = 75.299999999999997,
-                            Citizenship = "Ukrainian"
+                            Weight = 75.299999999999997
                         });
                 });
 

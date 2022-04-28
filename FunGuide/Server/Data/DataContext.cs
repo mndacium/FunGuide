@@ -26,7 +26,7 @@ namespace FunGuide.Server.Data
                     Age = 22,
                     Height = 1.82,
                     Weight = 75.8,
-                    Сitizenship = "Ukrainian",
+                    Citizenship = "Ukrainian",
                     SportId=1
                 },
                 new Sportsman
@@ -38,7 +38,7 @@ namespace FunGuide.Server.Data
                     Age = 21,
                     Height = 1.8,
                     Weight = 75.3,
-                    Сitizenship = "Ukrainian",
+                    Citizenship = "Ukrainian",
                     SportId=2
                 }
             );
