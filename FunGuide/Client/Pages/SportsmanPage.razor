@@ -9,7 +9,7 @@
 else
 {
     <PageTitle>Edit sportsman</PageTitle>
-        <h1>Edit  @sportsman.FirstName @sportsman.LastName</h1>
+        <h1>Edit  @middleName</h1>
 }
 <EditForm Model="@sportsman" OnSubmit="HandleSubmit">
     <DataAnnotationsValidator/>
@@ -82,6 +82,7 @@ else
     [Parameter]
     public int? Id { get; set; }
     string btnText = string.Empty;
+    string middleName = string.Empty;
     Sportsman sportsman = new Sportsman {Sport=new Sport()};
     protected override async void OnInitialized()
     {
@@ -98,6 +99,7 @@ else
         else
         {
             sportsman = await SportsmanService.GetSingleSportsman((int)Id);
+            middleName = sportsman.FirstName + " " + sportsman.LastName;
         }
     }
     async Task HandleSubmit()
