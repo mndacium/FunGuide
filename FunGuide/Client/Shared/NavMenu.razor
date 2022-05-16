@@ -12,32 +12,34 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="btn-group">
-            <div class="nav-item px-3 pb-3 btn ">
-                <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+        <div class="row">
+            <div class="nav-item pb-3 px-3 col-6">
+                <NavLink class="nav-link " href="/" Match="NavLinkMatch.All">
                     <span class="oi oi-home" aria-hidden="true"></span> База
                 </NavLink>
             </div>
-            <button class="btn dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-               <p>baza</p>
-            </ul>
+
+            <div class="btn-group col-6 ">
+                <button type="button" class="btn nav-item dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    TEst
+                </button>
+                <div class="dropdown-menu">
+                    @foreach (var sport in SportsmanService.Sports)
+                    {
+                        <NavLink class="nav-link" Match="NavLinkMatch.All" @onclick="(()=>ShowSportCategory(sport.Id))">
+                            @sport.Name
+                        </NavLink>
+                    }
+                </div>
+            </div>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/record" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Рекорд
-            </NavLink>
-        </div>
+
+
 
     </nav>
-
-
-
-
 </div>
+
 
 @code {
     protected override async Task OnInitializedAsync()

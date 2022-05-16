@@ -1,6 +1,7 @@
 ﻿@page "/sportsman"
 @page "/sportsman/{id:int}"
 @inject ISportsmanService SportsmanService
+
 @if (Id == null)
 {
     <PageTitle>Add new sportsman</PageTitle>
@@ -11,10 +12,10 @@ else
     <PageTitle>Edit sportsman</PageTitle>
         <h1>Edit  @middleName</h1>
 }
-<EditForm Model="@sportsman" OnSubmit="HandleSubmit">
+<EditForm Model="sportsman" OnSubmit="HandleSubmit">
     <DataAnnotationsValidator/>
    <div class="col-6">
-       <label>First name</label>
+       <label>  name</label>
        <InputText id="firstName" @bind-Value="sportsman.FirstName" class="form-control" ></InputText>
        <ValidationMessage For="@(()=>sportsman.FirstName)"></ValidationMessage>
    </div>
