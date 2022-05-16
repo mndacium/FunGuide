@@ -20,11 +20,13 @@ namespace FunGuide.Shared
         public string LastName { get; set; }= String.Empty;
 
         [DataType(DataType.Date)]
+        
         [Range(typeof(DateTime), "1/1/1942", "1/1/2008",ErrorMessage = "Date must be between {1} and {2}")]
         public DateTime? BirthDate { get; set; }
 
         [Range(14,80,ErrorMessage ="Age must be between {1} and {2}")]
-        public int Age { get; set; }
+        public int Age { get;set;
+        }
 
         [Range(1.40, 2.40, ErrorMessage = "Height must be between {1} and {2} metres")]
         public double Height { get; set; }

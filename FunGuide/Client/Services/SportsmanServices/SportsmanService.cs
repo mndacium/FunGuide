@@ -21,15 +21,24 @@ namespace FunGuide.Client.Services.SportsmanServices
             {
                 return result;
             }
-            throw new Exception("Sportsman not found");
+            else
+            {
+                throw new Exception("Sportsman not found");
+
+            }
         }
 
-        public async Task GetSport()
+        public async Task<Sport> GetSport(int id)
         {
-            var result = await _http.GetFromJsonAsync<List<Sport>>("api/funguide/sports");
+            var result = await _http.GetFromJsonAsync<Sport>($"api/funguide/sports/{id}");
             if (result != null)
             {
-                Sports = result;
+                return result;  
+            }
+            else
+            {
+                throw new Exception("Sport not found");
+
             }
         }
 
@@ -40,16 +49,25 @@ namespace FunGuide.Client.Services.SportsmanServices
             {
                 Sportsmen = result;
             }
+            else
+            {
+                throw new Exception("Sportsmen not found");
+
+            }
 
         }
         public async Task GetSports()
         {
-            var result = await _http.GetFromJsonAsync<List<Sport>>("api/sports");
+            var result = await _http.GetFromJsonAsync<List<Sport>>("api/funguide/sports");
             if (result != null)
             {
                 Sports = result;
             }
-            throw new Exception("Sport not found");
+            else
+            {
+                throw new Exception("Sports not found");
+
+            }
         }
 
         public async Task CreateSportsman(Sportsman sportsman)
@@ -75,6 +93,7 @@ namespace FunGuide.Client.Services.SportsmanServices
             Sportsmen = response;
             _navigationManager.NavigateTo("/");
         }
+
     }
 
 

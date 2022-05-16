@@ -47,6 +47,16 @@ namespace FunGuide.Server.Controllers
             var sports = await _context.Sports.ToListAsync();
             return Ok(sports);
         }
+        [HttpGet("sports/{id}")]
+        public async Task<ActionResult<Sport>> GetSport(int id)
+        {
+            var sport = await _context.Sports.FirstOrDefaultAsync(s => s.Id == id);
+            if (sport == null)
+            {
+                return NotFound("Sorry sport not found");
+            }
+            return Ok(sport);
+        }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Sportsman>>> UpdateSportsman(Sportsman sportsman,int id)

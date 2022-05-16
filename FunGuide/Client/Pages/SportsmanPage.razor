@@ -32,7 +32,7 @@ else
    </div>
    <div class="col-6">
        <label>Age</label>
-       <InputNumber id="age" @bind-Value="sportsman.Age" class="form-control" ></InputNumber>
+       <InputNumber id="age" @bind-Value="sportsman.Age" class="form-control"></InputNumber>
        <ValidationMessage For="@(()=>sportsman.Age)"></ValidationMessage>
 
    </div>
@@ -73,7 +73,11 @@ else
    </div>
    <br/>
    <button type="submit" class="btn btn-primary">@btnText</button>
-   <button type="button" class = "btn btn-danger" @onclick="DeleteSportsman">Видалити спортсмена</button>
+    @if (Id != null)
+    {
+    <button type="button" class = "btn btn-danger" @onclick="DeleteSportsman">Видалити спортсмена</button>
+        
+    }
 </EditForm>
 
 
@@ -87,7 +91,7 @@ else
     protected override async void OnInitialized()
     {
         btnText = Id == null ? "Зберегти нового спортсмена" : "Змінити дані спортсмена";
-        await SportsmanService.GetSport();
+        
     }
     protected override async Task OnParametersSetAsync()
     {
@@ -117,4 +121,5 @@ else
     {
         await SportsmanService.DeleteSportsman(sportsman.Id);
     }
+
 }
