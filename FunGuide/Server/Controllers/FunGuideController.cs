@@ -65,10 +65,31 @@ namespace FunGuide.Server.Controllers
         public async Task<ActionResult<List<Sportsman>>> SearchSportsmen(string? searchText, int? sportId)
         {
 
-            Debug.WriteLine(searchText, "searchText");
-            Debug.WriteLine(sportId, "ControllerId");
-            var result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower()) && s.SportId == sportId).ToListAsync();
+            var result = new List<Sportsman>();
+
+            if (!string.IsNullOrEmpty(searchText) && sportId != 0)
+            {
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower()) && s.SportId == sportId).ToListAsync();
+            }
+            else if (string.IsNullOrEmpty(searchText) && sportId != 0)
+            {
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == sportId).ToListAsync();
+            }
+            else if (!string.IsNullOrEmpty(searchText)&&sportId==0)
+            {
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower())).ToListAsync();
+
+            }
+            else if (string.IsNullOrEmpty(searchText) && sportId == 0)
+            {
+                result = await GetDbSportsmen();
+            }
+
             return Ok(result);
+            
+        
+
+           
         }
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Sportsman>>> UpdateSportsman(Sportsman sportsman, int id)

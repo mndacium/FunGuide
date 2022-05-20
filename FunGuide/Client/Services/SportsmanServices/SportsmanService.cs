@@ -97,17 +97,13 @@ namespace FunGuide.Client.Services.SportsmanServices
 
         public async Task SearchSportsmen(string? searchText,int? sportId)
         {
-            Debug.WriteLine(sportId, "ServiceId");
+            
             var result = await _http.GetFromJsonAsync<List<Sportsman>>($"/api/funguide/search?searchText={searchText}&sportId={sportId}");
             
 
             if(result!=null)
             {
                 Sportsmen = result;
-            }
-            else if (searchText == String.Empty)
-            {
-                Sportsmen = Sportsmen;
             }
             else
             {

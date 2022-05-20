@@ -5,17 +5,20 @@
 <PageTitle>Довідник фаната</PageTitle>
 <h1>База </h1>
 
-<input @bind="@searchText"/>
-<select @bind="@sportId">
+<EditForm  Model="@SportsmanSearch">
+     <DataAnnotationsValidator />
+        <InputText @bind-Value="@SportsmanSearch.Name"/>
+        <ValidationMessage For="@(()=>SportsmanSearch.Name)"></ValidationMessage>
+        <select @bind="@SportsmanSearch.SportId">
+            <option value=0>All</option>
     @foreach(var sport in SportsmanService.Sports)
     {
         <option value="@sport.Id">@sport.Name</option>
     }
 </select>
-<button @onclick="(()=>SearchSportsmen(searchText,sportId))">Пошук</button>
+<button @onclick="(()=>SearchSportsmen(SportsmanSearch.Name,SportsmanSearch.SportId))">Пошук</button>
 <button @onclick="ShowDefaultTable">Видалити всі фільтри</button>
-<p>@searchText</p>
-<p>@sportId</p>
+</EditForm>
 
 
 <table class="table">
@@ -39,8 +42,7 @@
         @foreach (var sportsman in SportsmanService.Sportsmen)
         {
 
-
-            {
+ 
                 <tr>
                 <td>@sportsman.FirstName</td>
                 <td>@sportsman.LastName</td>
@@ -63,7 +65,7 @@
             
 
 
-        }
+        
     </tbody>
     <NavLink class="nav-link" href="/sportsman" Match="NavLinkMatch.All">
         <button type="submit" class="btn btn-primary" @onclick="CreateSportsman">Додати спортсмена до бази</button>
@@ -74,17 +76,21 @@
 
 
 @code{
-    public string? searchText;
-    public int? sportId=1;
+    SportsmanSearchModel SportsmanSearch = new SportsmanSearchModel
+    {
+             Name=String.Empty,
+             SportId=0
+    };
+
     protected override async Task OnInitializedAsync()
     {
         await SportsmanService.GetSportsmen();
     }
 
-    public async Task SearchSportsmen(string? searchText, int? id)
+    public async Task SearchSportsmen(string? searchText, int? sportId)
     {
 
-        await SportsmanService.SearchSportsmen(searchText,id);
+        await SportsmanService.SearchSportsmen(searchText,sportId);
     }
 
     void ShowHero(int id)
@@ -97,7 +103,9 @@
     }
     async Task ShowDefaultTable()
     {
-         await SportsmanService.GetSportsmen();
+        SportsmanSearch.Name = String.Empty;
+        SportsmanSearch.SportId = 0;
+        await SportsmanService.GetSportsmen();
     }
 }
 
