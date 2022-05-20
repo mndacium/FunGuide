@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FunGuide.Shared
 {
-    internal class SportsmanSearchModel
+    public class SportsmanSearchModel
     {
         public string Name{ get; set; }
         public int SportId { get; set; }

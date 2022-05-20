@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using FunGuide.Client.Services.SportsmanServices;
+using System.Diagnostics;
 
 namespace FunGuide.Server.Controllers
 {
@@ -61,19 +62,12 @@ namespace FunGuide.Server.Controllers
             return Ok(sport);
         }
         [HttpGet("search")]
-        public async Task<ActionResult<List<Sportsman>>> SearchSportsmen(string searchText, int Id)
+        public async Task<ActionResult<List<Sportsman>>> SearchSportsmen(string? searchText, int? sportId)
         {
 
-            var result = await _context.Sportsmen.Include(s=>s.Sport).Where(s => s.FirstName.ToLower()
-            .Contains(searchText.ToLower())
-            || s.LastName.ToLower()
-            .Contains(searchText.ToLower()))
-             .ToListAsync();
-            if (!result.Any())
-            {
-                return NotFound();
-            }
-           
+            Debug.WriteLine(searchText, "searchText");
+            Debug.WriteLine(sportId, "ControllerId");
+            var result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower()) && s.SportId == sportId).ToListAsync();
             return Ok(result);
         }
         [HttpPut("{id}")]

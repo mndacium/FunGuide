@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Diagnostics;
 using System.Net.Http.Json;
 
 namespace FunGuide.Client.Services.SportsmanServices
@@ -96,9 +97,9 @@ namespace FunGuide.Client.Services.SportsmanServices
 
         public async Task SearchSportsmen(string? searchText,int? sportId)
         {
-
-            var result = await _http.GetFromJsonAsync<List<Sportsman>>($"/api/funguide/search?searchText={searchText}&sport={sportId}");
-
+            Debug.WriteLine(sportId, "ServiceId");
+            var result = await _http.GetFromJsonAsync<List<Sportsman>>($"/api/funguide/search?searchText={searchText}&sportId={sportId}");
+            
 
             if(result!=null)
             {

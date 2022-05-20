@@ -4,20 +4,18 @@
 
 <PageTitle>Довідник фаната</PageTitle>
 <h1>База </h1>
-<div class="row">
-    <div class="col-6">
-        <h4>Пошук по імені</h4>
-        <input @bind="@searchText" />
-<select @bind="SportSearchId">
-            @foreach(var sport in SportsmanService.Sports)
-            {
-                <option value="@sport.Id">@sport.Name</option>
-            }
-        </select>
-        <button class="btn" @onclick="(()=>SearchSportsmen(searchText,SportSearchId))">Search</button>
-    </div>
-</div>
 
+<input @bind="@searchText"/>
+<select @bind="@sportId">
+    @foreach(var sport in SportsmanService.Sports)
+    {
+        <option value="@sport.Id">@sport.Name</option>
+    }
+</select>
+<button @onclick="(()=>SearchSportsmen(searchText,sportId))">Пошук</button>
+<button @onclick="ShowDefaultTable">Видалити всі фільтри</button>
+<p>@searchText</p>
+<p>@sportId</p>
 
 
 <table class="table">
@@ -40,27 +38,30 @@
 
         @foreach (var sportsman in SportsmanService.Sportsmen)
         {
-           
 
+
+            {
                 <tr>
-                    <td>@sportsman.FirstName</td>
-                    <td>@sportsman.LastName</td>
-                    <td>
-                        @(sportsman.BirthDate?
+                <td>@sportsman.FirstName</td>
+                <td>@sportsman.LastName</td>
+                <td>
+                    @(sportsman.BirthDate?
                 .ToString("dd:MM:yyyy")
                 ??"No info"
                 )
-                    </td>
-                    <td>@sportsman.Age років</td>
-                    <td>@sportsman.Height м</td>
-                    <td>@sportsman.Weight кг</td>
-                    <td>@sportsman.Citizenship</td>
-                    <td>@sportsman.Sport.Name</td>
-                    <td>@sportsman.Team</td>
-                    <button class="btn btn-primary" @onclick="(()=>ShowHero(sportsman.Id))"><i class="oi oi-pencil"></i></button>
-                </tr>
-           
+                </td>
+                <td>@sportsman.Age років</td>
+                <td>@sportsman.Height м</td>
+                <td>@sportsman.Weight кг</td>
+                <td>@sportsman.Citizenship</td>
+                <td>@sportsman.Sport.Name</td>
+                <td>@sportsman.Team</td>
+                <button class="btn btn-primary" @onclick="(()=>ShowHero(sportsman.Id))"><i class="oi oi-pencil"></i></button>
+            </tr>
+
+            }
             
+
 
         }
     </tbody>
@@ -68,23 +69,21 @@
         <button type="submit" class="btn btn-primary" @onclick="CreateSportsman">Додати спортсмена до бази</button>
 
     </NavLink>
-
 </table>
 
 
 
-@code {
-    public int? SportSearchId = 1;
-    public string? searchText = string.Empty;
-
+@code{
+    public string? searchText;
+    public int? sportId=1;
     protected override async Task OnInitializedAsync()
     {
         await SportsmanService.GetSportsmen();
-        await InvokeAsync(StateHasChanged);
     }
 
-    public async Task SearchSportsmen(string? searchText,int? id)
+    public async Task SearchSportsmen(string? searchText, int? id)
     {
+
         await SportsmanService.SearchSportsmen(searchText,id);
     }
 
@@ -96,5 +95,9 @@
     {
         navigationManager.NavigateTo("/sportsman");
     }
-    
+    async Task ShowDefaultTable()
+    {
+         await SportsmanService.GetSportsmen();
+    }
 }
+

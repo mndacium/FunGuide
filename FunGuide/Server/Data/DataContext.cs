@@ -14,7 +14,9 @@ namespace FunGuide.Server.Data
                 new Sport
                 { Id = 1, Name = "Football" },
                 new Sport
-                { Id = 2, Name = "MMA"}
+                { Id = 2, Name = "MMA"},
+                new Sport 
+                { Id = 3, Name ="Basketball"}
             );
             modelBuilder.Entity<Sportsman>().HasData(
                 new Sportsman
