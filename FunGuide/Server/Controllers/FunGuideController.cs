@@ -1,7 +1,7 @@
 ﻿using FunGuide.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-
+using FunGuide.Client.Services.SportsmanServices;
 
 namespace FunGuide.Server.Controllers
 {
@@ -10,12 +10,15 @@ namespace FunGuide.Server.Controllers
     public class FunGuideController : ControllerBase
     {
         private readonly DataContext _context;
-        public FunGuideController(DataContext context){ _context = context;}
+        public FunGuideController(DataContext context)
+        {
+            _context = context;
+        }
 
         [HttpPost]
         public async Task<ActionResult<List<Sportsman>>> CreateSportsman(Sportsman sportsman)
         {
-            
+
             sportsman.Sport = null;
             _context.Add(sportsman);
             await _context.SaveChangesAsync();
@@ -33,7 +36,7 @@ namespace FunGuide.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Sportsman>> GetSingleSportsman(int id)
         {
-            var sportsman = await _context.Sportsmen.Include(s=>s.Sport).FirstOrDefaultAsync(h => h.Id == id);
+            var sportsman = await _context.Sportsmen.Include(s => s.Sport).FirstOrDefaultAsync(h => h.Id == id);
             if (sportsman == null)
             {
                 return NotFound("Sorry sportsman not found");
@@ -57,12 +60,27 @@ namespace FunGuide.Server.Controllers
             }
             return Ok(sport);
         }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<List<Sportsman>>> UpdateSportsman(Sportsman sportsman,int id)
+        [HttpGet("search")]
+        public async Task<ActionResult<List<Sportsman>>> SearchSportsmen(string searchText, int Id)
         {
 
-            var dbSportsman = await _context.Sportsmen.Include(s=>s.Sport).FirstOrDefaultAsync(h => h.Id == id);
+            var result = await _context.Sportsmen.Include(s=>s.Sport).Where(s => s.FirstName.ToLower()
+            .Contains(searchText.ToLower())
+            || s.LastName.ToLower()
+            .Contains(searchText.ToLower()))
+             .ToListAsync();
+            if (!result.Any())
+            {
+                return NotFound();
+            }
+           
+            return Ok(result);
+        }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<List<Sportsman>>> UpdateSportsman(Sportsman sportsman, int id)
+        {
+
+            var dbSportsman = await _context.Sportsmen.Include(s => s.Sport).FirstOrDefaultAsync(h => h.Id == id);
             if (dbSportsman == null)
             {
                 return NotFound("Sorry sportsman not found");
@@ -75,10 +93,10 @@ namespace FunGuide.Server.Controllers
             dbSportsman.Height = sportsman.Height;
             dbSportsman.Weight = sportsman.Weight;
             dbSportsman.SportId = sportsman.SportId;
-            dbSportsman.Team=sportsman.Team;
+            dbSportsman.Team = sportsman.Team;
             await _context.SaveChangesAsync();
             return Ok(await GetDbSportsmen());
-        } 
+        }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSportsman(int id)
@@ -91,9 +109,9 @@ namespace FunGuide.Server.Controllers
             _context.Sportsmen.Remove(dbSportsman);
             await _context.SaveChangesAsync();
             return Ok(await GetDbSportsmen());
-            
+
         }
-        
+
 
         public async Task<List<Sportsman>> GetDbSportsmen()
         {

@@ -12,32 +12,23 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="row">
-            <div class="nav-item pb-3 px-3 col-6">
+            <div class="nav-item">  
+                <NavLink class="nav-link " href="/" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> База
+                </NavLink>
+            </div>
+            <div class="nav-item">
                 <NavLink class="nav-link " href="/" Match="NavLinkMatch.All">
                     <span class="oi oi-home" aria-hidden="true"></span> База
                 </NavLink>
             </div>
 
-            <div class="btn-group col-6 ">
-                <button type="button" class="btn nav-item dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    TEst
-                </button>
-                <div class="dropdown-menu">
-                    @foreach (var sport in SportsmanService.Sports)
-                    {
-                        <NavLink class="nav-link" Match="NavLinkMatch.All" @onclick="(()=>ShowSportCategory(sport.Id))">
-                            @sport.Name
-                        </NavLink>
-                    }
-                </div>
-            </div>
-        </div>
-
 
 
 
     </nav>
+
+   
 </div>
 
 
@@ -55,8 +46,5 @@
         collapseNavMenu = !collapseNavMenu;
 
     }
-    void ShowSportCategory(int id)
-    {
-        navigationManager.NavigateTo($"/sportcategory/{id}");
-    }
+
 }

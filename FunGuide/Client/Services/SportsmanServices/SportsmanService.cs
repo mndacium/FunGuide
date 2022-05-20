@@ -94,6 +94,27 @@ namespace FunGuide.Client.Services.SportsmanServices
             _navigationManager.NavigateTo("/");
         }
 
+        public async Task SearchSportsmen(string? searchText,int? sportId)
+        {
+
+            var result = await _http.GetFromJsonAsync<List<Sportsman>>($"/api/funguide/search?searchText={searchText}&sport={sportId}");
+
+
+            if(result!=null)
+            {
+                Sportsmen = result;
+            }
+            else if (searchText == String.Empty)
+            {
+                Sportsmen = Sportsmen;
+            }
+            else
+            {
+                throw new Exception("Search not found");
+            }
+
+
+        }
     }
 
 

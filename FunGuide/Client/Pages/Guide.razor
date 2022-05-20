@@ -1,14 +1,27 @@
 ﻿@page "/"
-@page "/sportcategory/{id:int}"
 @inject ISportsmanService SportsmanService
 @inject NavigationManager navigationManager;
 
 <PageTitle>Довідник фаната</PageTitle>
 <h1>База </h1>
+<div class="row">
+    <div class="col-6">
+        <h4>Пошук по імені</h4>
+        <input @bind="@searchText" />
+<select @bind="SportSearchId">
+            @foreach(var sport in SportsmanService.Sports)
+            {
+                <option value="@sport.Id">@sport.Name</option>
+            }
+        </select>
+        <button class="btn" @onclick="(()=>SearchSportsmen(searchText,SportSearchId))">Search</button>
+    </div>
+</div>
+
 
 
 <table class="table">
-    <thead >
+    <thead>
         <tr>
             <th>First Name</th>
             <th>Last Name</th>
@@ -23,75 +36,58 @@
     </thead>
     <tbody>
 
-        @foreach(var sportsman in SportsmanService.Sportsmen)
-        {
-            if (Id == null)
-            {
-                 <tr>
-                <td>@sportsman.FirstName</td>
-                <td>@sportsman.LastName</td>
-                <td>@(sportsman.BirthDate?
-                    .ToString("dd:MM:yyyy")
-                    ??"No info"
-                    )</td>
-                <td>@sportsman.Age років</td>
-                <td>@sportsman.Height м</td>
-                <td>@sportsman.Weight кг</td>
-                <td>@sportsman.Citizenship</td>
-                <td>@sportsman.Sport.Name</td>
-                <td>@sportsman.Team</td> 
-                <button class="btn btn-primary" @onclick="(()=>ShowHero(sportsman.Id))"><i class="oi oi-pencil"></i></button>
-                </tr>
-            }
-            else
-            {
-                if (sportsman.Sport.Id == Id)
-                {
-                 <tr>
-                <td>@sportsman.FirstName</td>
-                <td>@sportsman.LastName</td>
-                <td>@(sportsman.BirthDate?
-                    .ToString("dd:MM:yyyy")
-                    ??"No info"
-                    )</td>
-                <td>@sportsman.Age років</td>
-                <td>@sportsman.Height м</td>
-                <td>@sportsman.Weight кг</td>
-                <td>@sportsman.Citizenship</td>
-                <td>@sportsman.Sport.Name</td>
-                <td>@sportsman.Team</td> 
-                <button class="btn btn-primary" @onclick="(()=>ShowHero(sportsman.Id))"><i class="oi oi-pencil"></i></button>
-                </tr>
-                }
-            }
 
+
+        @foreach (var sportsman in SportsmanService.Sportsmen)
+        {
+           
+
+                <tr>
+                    <td>@sportsman.FirstName</td>
+                    <td>@sportsman.LastName</td>
+                    <td>
+                        @(sportsman.BirthDate?
+                .ToString("dd:MM:yyyy")
+                ??"No info"
+                )
+                    </td>
+                    <td>@sportsman.Age років</td>
+                    <td>@sportsman.Height м</td>
+                    <td>@sportsman.Weight кг</td>
+                    <td>@sportsman.Citizenship</td>
+                    <td>@sportsman.Sport.Name</td>
+                    <td>@sportsman.Team</td>
+                    <button class="btn btn-primary" @onclick="(()=>ShowHero(sportsman.Id))"><i class="oi oi-pencil"></i></button>
+                </tr>
+           
             
+
         }
     </tbody>
-       <NavLink class="nav-link" href="/sportsman" Match="NavLinkMatch.All">
-   <button type="submit" class="btn btn-primary" @onclick="CreateSportsman">Додати спортсмена до бази</button>
-       
-   </NavLink>
+    <NavLink class="nav-link" href="/sportsman" Match="NavLinkMatch.All">
+        <button type="submit" class="btn btn-primary" @onclick="CreateSportsman">Додати спортсмена до бази</button>
+
+    </NavLink>
 
 </table>
 
 
 
-@code{
-    [Parameter]
-    public int? Id { get; set; }
+@code {
+    public int? SportSearchId = 1;
+    public string? searchText = string.Empty;
 
-    protected override async Task OnInitializedAsync(){
+    protected override async Task OnInitializedAsync()
+    {
         await SportsmanService.GetSportsmen();
         await InvokeAsync(StateHasChanged);
     }
-    public void Test()
+
+    public async Task SearchSportsmen(string? searchText,int? id)
     {
-            foreach(var t in SportsmanService.Sportsmen)
-        {
-            Console.WriteLine(t.Id);
-        }
+        await SportsmanService.SearchSportsmen(searchText,id);
     }
+
     void ShowHero(int id)
     {
         navigationManager.NavigateTo($"/sportsman/{id}");
@@ -100,4 +96,5 @@
     {
         navigationManager.NavigateTo("/sportsman");
     }
+    
 }

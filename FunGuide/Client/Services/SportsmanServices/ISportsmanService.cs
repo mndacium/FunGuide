@@ -9,6 +9,7 @@
         Task GetSports();
         Task<Sportsman> GetSingleSportsman(int id);
         Task<Sport> GetSport(int id);
+        Task SearchSportsmen(string? searchText,int? id);
         Task UpdateSportsman(Sportsman sportsman);
         Task DeleteSportsman(int id);
        
