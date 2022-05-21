@@ -9,7 +9,8 @@ namespace FunGuide.Client.Services.SportsmanServices
     {
         private readonly HttpClient _http;
         private readonly NavigationManager _navigationManager;
-        public SportsmanService(HttpClient http,NavigationManager navigation) { 
+        public SportsmanService(HttpClient http, NavigationManager navigation)
+        {
             _http = http;
             _navigationManager = navigation;
         }
@@ -34,7 +35,7 @@ namespace FunGuide.Client.Services.SportsmanServices
             var result = await _http.GetFromJsonAsync<Sport>($"api/funguide/sports/{id}");
             if (result != null)
             {
-                return result;  
+                return result;
             }
             else
             {
@@ -75,11 +76,11 @@ namespace FunGuide.Client.Services.SportsmanServices
         {
             var result = await _http.PostAsJsonAsync("/api/funguide", sportsman);
             await SetSportsmen(result);
-            }
+        }
 
         public async Task UpdateSportsman(Sportsman sportsman)
         {
-            var result = await _http.PutAsJsonAsync($"/api/funguide/{sportsman.Id}",sportsman);
+            var result = await _http.PutAsJsonAsync($"/api/funguide/{sportsman.Id}", sportsman);
             await SetSportsmen(result);
         }
 
@@ -95,13 +96,13 @@ namespace FunGuide.Client.Services.SportsmanServices
             _navigationManager.NavigateTo("/");
         }
 
-        public async Task SearchSportsmen(string? searchText,int? sportId)
+        public async Task SearchSportsmen(string? searchText, int? sportId)
         {
-            
-            var result = await _http.GetFromJsonAsync<List<Sportsman>>($"/api/funguide/search?searchText={searchText}&sportId={sportId}");
-            
 
-            if(result!=null)
+            var result = await _http.GetFromJsonAsync<List<Sportsman>>($"/api/funguide/search?searchText={searchText}&sportId={sportId}");
+
+
+            if (result != null)
             {
                 Sportsmen = result;
             }
@@ -112,6 +113,8 @@ namespace FunGuide.Client.Services.SportsmanServices
 
 
         }
+
+        
     }
 
 

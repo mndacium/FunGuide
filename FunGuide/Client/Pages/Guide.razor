@@ -58,7 +58,8 @@
                 <td>@sportsman.Citizenship</td>
                 <td>@sportsman.Sport.Name</td>
                 <td>@sportsman.Team</td>
-                <button class="btn btn-primary" @onclick="(()=>ShowHero(sportsman.Id))"><i class="oi oi-pencil"></i></button>
+                <td><button class="btn btn-primary" @onclick="(()=>ShowSportsman(sportsman.Id))"><i class="oi oi-pencil"></i></button></td>
+                <td><button class="btn btn-warning" @onclick="(()=>DeleteSportsman(sportsman.Id))"><i class="oi oi-delete"></i></button></td>
             </tr>
 
             }
@@ -93,7 +94,11 @@
         await SportsmanService.SearchSportsmen(searchText,sportId);
     }
 
-    void ShowHero(int id)
+     public async Task DeleteSportsman(int id)
+    {
+        await SportsmanService.DeleteSportsman(id);
+    }
+    void ShowSportsman(int id)
     {
         navigationManager.NavigateTo($"/sportsman/{id}");
     }

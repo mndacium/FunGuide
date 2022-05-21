@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using FunGuide.Client.Services.SportsmanServices;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace FunGuide.Server.Controllers
 {
@@ -66,31 +67,69 @@ namespace FunGuide.Server.Controllers
         {
 
             var result = new List<Sportsman>();
+            var searchQueryModel = new SportsmanSearchModel
+            {
+                Name = searchText,
+                SportId = sportId
+            };
+            /*      if (!string.IsNullOrEmpty(searchText) && sportId != 0)
+                  {
+                      result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower()) && s.SportId == searchQueryModel.SportId).ToListAsync();
+                  }
+                  else if (string.IsNullOrEmpty(searchText) && sportId != 0)
+                  {
+                      result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync();
+                  }
+                  else if (!string.IsNullOrEmpty(searchText) && sportId == 0)
+                  {
+                      result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync();
 
+                  }*/   
             if (!string.IsNullOrEmpty(searchText) && sportId != 0)
             {
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower()) && s.SportId == sportId).ToListAsync();
-            }
-            else if (string.IsNullOrEmpty(searchText) && sportId != 0)
-            {
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == sportId).ToListAsync();
-            }
-            else if (!string.IsNullOrEmpty(searchText)&&sportId==0)
-            {
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower())).ToListAsync();
-
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower()) && s.SportId == searchQueryModel.SportId).ToListAsync();
             }
             else if (string.IsNullOrEmpty(searchText) && sportId == 0)
             {
                 result = await GetDbSportsmen();
             }
+            else
+            {
+                if (sportId != 0)
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync());
+                }
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync());
+                }
+                if (result.Any())
+                {
+                    var maxRepetitions = result.GroupBy(s => s)
+               .OrderByDescending(s => s.Count()).First().Count();
+                    var maxRepeated = result.GroupBy(s => s).OrderByDescending(s => s.Count()).Where(s => s.Count() == maxRepetitions).Select(s => s.Key).ToList();
+                    if (maxRepeated.Any())
+                    {
+                        return Ok(maxRepeated);
+                    }
+                }
+                
+                return Ok(result);
+
+            }
 
             return Ok(result);
-            
-        
-
            
+
+
+
+
+
+
+
         }
+        
+       
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Sportsman>>> UpdateSportsman(Sportsman sportsman, int id)
         {
