@@ -66,18 +66,22 @@ namespace FunGuide.Server.Controllers
         {
 
             var result = new List<Sportsman>();
-
+            var searchQueryModel = new SportsmanSearchModel
+            {
+                Name = searchText,
+                SportId = sportId
+            };
             if (!string.IsNullOrEmpty(searchText) && sportId != 0)
             {
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower()) && s.SportId == sportId).ToListAsync();
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower()) && s.SportId == searchQueryModel.SportId).ToListAsync();
             }
             else if (string.IsNullOrEmpty(searchText) && sportId != 0)
             {
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == sportId).ToListAsync();
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync();
             }
             else if (!string.IsNullOrEmpty(searchText)&&sportId==0)
             {
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchText.ToLower())).ToListAsync();
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync();
 
             }
             else if (string.IsNullOrEmpty(searchText) && sportId == 0)
