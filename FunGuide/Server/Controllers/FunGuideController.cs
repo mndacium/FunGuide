@@ -84,7 +84,7 @@ namespace FunGuide.Server.Controllers
             }
             else
             {
-                if (sportId != 0)
+                if (sportId  != 0)
                 {
                     result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync());
                 }
