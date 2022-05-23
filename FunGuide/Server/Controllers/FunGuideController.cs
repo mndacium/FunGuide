@@ -72,19 +72,7 @@ namespace FunGuide.Server.Controllers
                 Name = searchText,
                 SportId = sportId
             };
-            /*      if (!string.IsNullOrEmpty(searchText) && sportId != 0)
-                  {
-                      result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower()) && s.SportId == searchQueryModel.SportId).ToListAsync();
-                  }
-                  else if (string.IsNullOrEmpty(searchText) && sportId != 0)
-                  {
-                      result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync();
-                  }
-                  else if (!string.IsNullOrEmpty(searchText) && sportId == 0)
-                  {
-                      result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync();
 
-                  }*/   
             if (!string.IsNullOrEmpty(searchText) && sportId != 0)
             {
                 result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower()) && s.SportId == searchQueryModel.SportId).ToListAsync();
@@ -92,6 +80,7 @@ namespace FunGuide.Server.Controllers
             else if (string.IsNullOrEmpty(searchText) && sportId == 0)
             {
                 result = await GetDbSportsmen();
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync();
             }
             else
             {
@@ -115,6 +104,7 @@ namespace FunGuide.Server.Controllers
                 }
                 
                 return Ok(result);
+                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync();
 
             }
 
