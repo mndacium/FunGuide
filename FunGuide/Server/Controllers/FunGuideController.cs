@@ -38,7 +38,7 @@ namespace FunGuide.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Sportsman>> GetSingleSportsman(int id)
         {
-            var sportsman = await _context.Sportsmen.Include(s => s.Sport).FirstOrDefaultAsync(h => h.Id == id);
+            var sportsman = await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship).FirstOrDefaultAsync(h => h.Id == id);
             if (sportsman == null)
             {
                 return NotFound("Sorry sportsman not found");
@@ -52,6 +52,12 @@ namespace FunGuide.Server.Controllers
             var sports = await _context.Sports.ToListAsync();
             return Ok(sports);
         }
+        [HttpGet("citizenships")]
+        public async Task<ActionResult<List<Citizenship>>> GetCitizenships()
+        {
+            var citizenships = await _context.Citizenships.ToListAsync();
+            return Ok(citizenships);
+        }
         [HttpGet("sports/{id}")]
         public async Task<ActionResult<Sport>> GetSport(int id)
         {
@@ -63,68 +69,138 @@ namespace FunGuide.Server.Controllers
             return Ok(sport);
         }
         [HttpGet("search")]
-        public async Task<ActionResult<List<Sportsman>>> SearchSportsmen(string? searchText, int? sportId)
+        public async Task<ActionResult<List<Sportsman>>> SearchSportsmen(string? Name, int? Age, double? HeightFrom, double? HeightTo, double? WeightFrom, double? WeightTo, int? citizenshipId, int? sportId, string? Team)
         {
 
             var result = new List<Sportsman>();
+            var emptyList = new List<Sportsman>();
             var searchQueryModel = new SportsmanSearchModel
             {
-                Name = searchText,
-                SportId = sportId
+                Name = Name,
+                Age = Age,
+                HeightFrom=HeightFrom,
+                HeightTo=HeightTo,
+                WeightFrom=WeightFrom,
+                WeightTo=WeightTo,
+                CitizenshipId = citizenshipId,
+                SportId = sportId,
+                Team = Team
             };
 
-            if (!string.IsNullOrEmpty(searchText) && sportId != 0)
+            if (!string.IsNullOrEmpty(Name) && Age != null && HeightFrom != null && HeightTo != null && WeightFrom != null && WeightTo != null && citizenshipId != 0 && sportId != 0 && !string.IsNullOrEmpty(Team))
             {
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower()) && s.SportId == searchQueryModel.SportId).ToListAsync();
+                result = await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                    .Where(s => 
+                    (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())
+                    && s.Age == searchQueryModel.Age
+                    && s.Height>=searchQueryModel.HeightFrom
+                    && s.Height <= searchQueryModel.HeightTo
+                    && s.Weight >= searchQueryModel.WeightFrom
+                    && s.Weight <= searchQueryModel.WeightTo
+                    && s.CitizenshipId == searchQueryModel.CitizenshipId
+                    && s.SportId == searchQueryModel.SportId
+                    && s.Team.ToLower().Contains(Team.ToLower()) 
+                    )
+
+
+                    .ToListAsync();
+                return Ok(result);
             }
-            else if (string.IsNullOrEmpty(searchText) && sportId == 0)
+            else if (string.IsNullOrEmpty(Name) && Age == null && HeightFrom == null && HeightTo == null && WeightFrom == null && WeightTo == null && citizenshipId == 0 && sportId == 0 && string.IsNullOrEmpty(Team))
             {
                 result = await GetDbSportsmen();
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync();
+                return Ok(result);
             }
             else
             {
-                if (sportId  != 0)
+                int filtersCount = 0;
+                if (sportId != 0)
                 {
-                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Where(s => s.SportId == searchQueryModel.SportId).ToListAsync());
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.SportId == searchQueryModel.SportId).ToListAsync());
+                    filtersCount++;
                 }
-                if (!string.IsNullOrEmpty(searchText))
+                if (!string.IsNullOrEmpty(Name))
                 {
-                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync());
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync());
+                    filtersCount++;
+
+                }
+                if (Age != null)
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.Age == searchQueryModel.Age).ToListAsync());
+                    filtersCount++;
+                }
+                if (HeightFrom != null)
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.Height >= searchQueryModel.HeightFrom).ToListAsync());
+                    filtersCount++;
+                }
+                if (HeightTo != null)
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.Height <= searchQueryModel.HeightTo).ToListAsync());
+                    filtersCount++;
+                }
+                if (WeightFrom != null)
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.Weight >= searchQueryModel.WeightFrom).ToListAsync());
+                    filtersCount++;
+                }
+                if (WeightTo != null)
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.Weight <= searchQueryModel.WeightTo).ToListAsync());
+                    filtersCount++;
+                }
+                if (citizenshipId != 0)
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.CitizenshipId == searchQueryModel.CitizenshipId).ToListAsync());
+                    filtersCount++;
+                }
+                if (!string.IsNullOrEmpty(Team))
+                {
+                    result.AddRange(await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship)
+                        .Where(s => s.Team.ToLower().Contains(searchQueryModel.Team.ToLower())).ToListAsync());
+                    filtersCount++;
+
                 }
                 if (result.Any())
                 {
                     var maxRepetitions = result.GroupBy(s => s)
-               .OrderByDescending(s => s.Count()).First().Count();
-                    var maxRepeated = result.GroupBy(s => s).OrderByDescending(s => s.Count()).Where(s => s.Count() == maxRepetitions).Select(s => s.Key).ToList();
-                    if (maxRepeated.Any())
+                    .OrderByDescending(s => s.Count()).First().Count();
+                    var maxRepeated = result.GroupBy(s => s).OrderByDescending(s => s.Count())
+                        .Where(s => s.Count() == maxRepetitions).Select(s => s.Key).ToList();
+                    if (maxRepeated.Any() && maxRepetitions == filtersCount)
                     {
                         return Ok(maxRepeated);
                     }
+                    else
+                    {
+                        return Ok(emptyList);
+                    }
                 }
-                
+                else
+                {
+                    return Ok(emptyList);
+                }
+
                 return Ok(result);
-                result = await _context.Sportsmen.Include(s => s.Sport).Where(s => (s.FirstName + s.LastName).ToLower().Contains(searchQueryModel.Name.ToLower())).ToListAsync();
 
             }
-
-            return Ok(result);
-           
-
-
-
-
-
-
-
         }
-        
-       
+
+
         [HttpPut("{id}")]
         public async Task<ActionResult<List<Sportsman>>> UpdateSportsman(Sportsman sportsman, int id)
         {
 
-            var dbSportsman = await _context.Sportsmen.Include(s => s.Sport).FirstOrDefaultAsync(h => h.Id == id);
+            var dbSportsman = await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship).FirstOrDefaultAsync(h => h.Id == id);
             if (dbSportsman == null)
             {
                 return NotFound("Sorry sportsman not found");
@@ -133,7 +209,7 @@ namespace FunGuide.Server.Controllers
             dbSportsman.LastName = sportsman.LastName;
             dbSportsman.Age = sportsman.Age;
             dbSportsman.BirthDate = sportsman.BirthDate;
-            dbSportsman.Citizenship = sportsman.Citizenship;
+            dbSportsman.CitizenshipId = sportsman.CitizenshipId;
             dbSportsman.Height = sportsman.Height;
             dbSportsman.Weight = sportsman.Weight;
             dbSportsman.SportId = sportsman.SportId;
@@ -145,7 +221,7 @@ namespace FunGuide.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSportsman(int id)
         {
-            var dbSportsman = await _context.Sportsmen.Include(s => s.Sport).FirstOrDefaultAsync(s => s.Id == id);
+            var dbSportsman = await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship).FirstOrDefaultAsync(s => s.Id == id);
             if (dbSportsman == null)
             {
                 return NotFound("Sorry sportsman not found");
@@ -159,7 +235,7 @@ namespace FunGuide.Server.Controllers
 
         public async Task<List<Sportsman>> GetDbSportsmen()
         {
-            return await _context.Sportsmen.Include(s => s.Sport).ToListAsync();
+            return await _context.Sportsmen.Include(s => s.Sport).Include(s => s.Citizenship).ToListAsync();
         }
     }
 }

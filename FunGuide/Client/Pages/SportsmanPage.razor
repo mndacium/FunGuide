@@ -51,8 +51,13 @@ else
    </div> 
     <div class="col-6">
        <label>Citizenship</label>
-       <InputText id="Citizenship" @bind-Value="sportsman.Citizenship" class="form-control" ></InputText>
-       <ValidationMessage For="@(()=>sportsman.Citizenship)"></ValidationMessage>
+       <InputSelect id="Citizenship" @bind-Value="sportsman.CitizenshipId" class="form-control" >
+            @foreach(var sport in SportsmanService.Citizenships)
+            {
+                <option value="@sport.Id">@sport.Name</option>
+            }
+       </InputSelect>
+       <ValidationMessage For="@(()=>sportsman.CitizenshipId)"></ValidationMessage>
 
    </div>
    <div class="col-6">
@@ -122,5 +127,6 @@ else
     {
         await SportsmanService.DeleteSportsman(sportsman.Id);
     }
+
 
 }

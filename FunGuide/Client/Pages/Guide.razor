@@ -1,27 +1,77 @@
 ﻿@page "/"
-@inject ISportsmanService SportsmanService
+@inject ISportsmanService SportsmanService;
+@inject IJSRuntime JSRuntime;
 @inject NavigationManager navigationManager;
 
 <PageTitle>Довідник фаната</PageTitle>
 <h1>База </h1>
 
-<EditForm  Model="@SportsmanSearch">
-     <DataAnnotationsValidator />
-        <InputText @bind-Value="@SportsmanSearch.Name"/>
+<EditForm Model="@SportsmanSearch">
+    <DataAnnotationsValidator />
+    <div class="col-3">
+        <label>  Ім'я</label>
+        <InputText @bind-Value="@SportsmanSearch.Name" />
         <ValidationMessage For="@(()=>SportsmanSearch.Name)"></ValidationMessage>
+    </div>
+    <div class="col-11">
+        <label>  Рік народження</label>
+        <InputNumber class="col-1" @bind-Value="@SportsmanSearch.BirthYear" />
+        <ValidationMessage For="@(()=>SportsmanSearch.BirthYear)"></ValidationMessage>
+    </div>
+    <div class="col-3">
+        <label>  Вік</label>
+        <InputNumber @bind-Value="@SportsmanSearch.Age" />
+        <ValidationMessage For="@(()=>SportsmanSearch.Age)"></ValidationMessage>
+    </div>
+    <div class="col-3">
+        <label>  Ріст від</label>
+        <InputNumber class="col-2" @bind-Value="@SportsmanSearch.HeightFrom" />
+        <ValidationMessage For="@(()=>SportsmanSearch.HeightFrom)"></ValidationMessage>
+        <label>  До</label>
+        <InputNumber class="col-2" @bind-Value="@SportsmanSearch.HeightTo" />
+        <ValidationMessage For="@(()=>SportsmanSearch.HeightTo)"></ValidationMessage>
+
+    </div>
+    <div class="col-3">
+        <label>  Вага від</label>
+        <InputNumber class="col-2" @bind-Value="@SportsmanSearch.WeightFrom" />
+        <ValidationMessage For="@(()=>SportsmanSearch.WeightFrom)"></ValidationMessage>
+        <label>  До</label>
+        <InputNumber class="col-2" @bind-Value="@SportsmanSearch.WeightTo" />
+        <ValidationMessage For="@(()=>SportsmanSearch.WeightTo)"></ValidationMessage>
+    </div>
+    <div class="col-3">
+        <label>  Громадянство</label>
+        <select @bind="@SportsmanSearch.CitizenshipId">
+            <option value=0>All</option>
+            @foreach (var citizenship in SportsmanService.Citizenships)
+            {
+                <option value="@citizenship.Id">@citizenship.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-3">
+        <label>  Спорт</label>
         <select @bind="@SportsmanSearch.SportId">
             <option value=0>All</option>
-    @foreach(var sport in SportsmanService.Sports)
-    {
-        <option value="@sport.Id">@sport.Name</option>
-    }
-</select>
-<button @onclick="(()=>SearchSportsmen(SportsmanSearch.Name,SportsmanSearch.SportId))">Пошук</button>
-<button @onclick="ShowDefaultTable">Видалити всі фільтри</button>
+            @foreach (var sport in SportsmanService.Sports)
+            {
+
+                <option value="@sport.Id">@sport.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-3">
+        <label>  Команда</label>
+        <InputText @bind-Value="@SportsmanSearch.Team" />
+        <ValidationMessage For="@(()=>SportsmanSearch.Team)"></ValidationMessage>
+    </div>
+    <button @onclick="(()=>SearchSportsmen(SportsmanSearch))">Пошук</button>
+    <button @onclick="ShowDefaultTable">Видалити всі фільтри</button>
 </EditForm>
 
 
-<table class="table">
+<table class="table" id="listOfSportsmen">
     <thead>
         <tr>
             <th>First Name</th>
@@ -42,31 +92,28 @@
         @foreach (var sportsman in SportsmanService.Sportsmen)
         {
 
- 
-                <tr>
+
+            <tr>
                 <td>@sportsman.FirstName</td>
                 <td>@sportsman.LastName</td>
-                <td>
-                    @(sportsman.BirthDate?
-                .ToString("dd:MM:yyyy")
-                ??"No info"
-                )
+                <td> @(sportsman.BirthDate?
+      .ToString("dd:MM:yyyy")??"No info")
                 </td>
                 <td>@sportsman.Age років</td>
                 <td>@sportsman.Height м</td>
                 <td>@sportsman.Weight кг</td>
-                <td>@sportsman.Citizenship</td>
+                <td>@sportsman.Citizenship.Name</td>
                 <td>@sportsman.Sport.Name</td>
                 <td>@sportsman.Team</td>
                 <td><button class="btn btn-primary" @onclick="(()=>ShowSportsman(sportsman.Id))"><i class="oi oi-pencil"></i></button></td>
                 <td><button class="btn btn-warning" @onclick="(()=>DeleteSportsman(sportsman.Id))"><i class="oi oi-delete"></i></button></td>
             </tr>
 
-            }
-            
+        }
 
 
-        
+
+
     </tbody>
     <NavLink class="nav-link" href="/sportsman" Match="NavLinkMatch.All">
         <button type="submit" class="btn btn-primary" @onclick="CreateSportsman">Додати спортсмена до бази</button>
@@ -75,26 +122,38 @@
 </table>
 
 
+<button @onclick="DownloadPdf"> Save</button>
 
-@code{
+
+
+@code {
     SportsmanSearchModel SportsmanSearch = new SportsmanSearchModel
-    {
-             Name=String.Empty,
-             SportId=0
-    };
+        {
+            SportId = 0,
+
+            CitizenshipId = 0
+        };
+    string fileName = "listOfSportsmen.txt";
+    string fileContent = "test";
+ 
+
+
 
     protected override async Task OnInitializedAsync()
     {
         await SportsmanService.GetSportsmen();
+        await SportsmanService.GetSports();
+        await SportsmanService.GetCitizenships();
+
     }
 
-    public async Task SearchSportsmen(string? searchText, int? sportId)
+    public async Task SearchSportsmen(SportsmanSearchModel s)
     {
 
-        await SportsmanService.SearchSportsmen(searchText,sportId);
+        await SportsmanService.SearchSportsmen(s);
     }
 
-     public async Task DeleteSportsman(int id)
+    public async Task DeleteSportsman(int id)
     {
         await SportsmanService.DeleteSportsman(id);
     }
@@ -112,5 +171,14 @@
         SportsmanSearch.SportId = 0;
         await SportsmanService.GetSportsmen();
     }
-}
+        async Task DownloadPdf()
+    {
+        await using var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./HtmlToPdf.js");
+
+        // Generate and download the PDF
+        await module.InvokeVoidAsync("generateAndDownloadPdf", "<h1>sample</h1>", "sample.pdf");
+
+
+    }
+ }
 
