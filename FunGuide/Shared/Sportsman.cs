@@ -33,8 +33,9 @@ namespace FunGuide.Shared
 
         [Range(35, 200, ErrorMessage = "Weight must be between {1} and {2} kilos")]
         public double Weight { get; set; }
-        [RegularExpression(@"^[a-zA-Z''-'\s]{2,20}$", ErrorMessage = "Characters are not allowed.")]
-        public string? Citizenship { get; set; }
+        
+        public Citizenship? Citizenship { get; set; }
+        public int CitizenshipId { get; set; }
 
         [Required(ErrorMessage ="Sport must me required")]
         public Sport? Sport { get; set; }

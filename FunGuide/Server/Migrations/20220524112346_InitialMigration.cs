@@ -5,10 +5,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FunGuide.Server.Migrations
 {
-    public partial class SportsmanMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Citizenships",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Citizenships", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Sports",
                 columns: table => new
@@ -28,19 +41,25 @@ namespace FunGuide.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Age = table.Column<int>(type: "int", nullable: false),
                     Height = table.Column<double>(type: "float", nullable: false),
                     Weight = table.Column<double>(type: "float", nullable: false),
-                    Citizenship = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CitizenshipId = table.Column<int>(type: "int", nullable: false),
                     SportId = table.Column<int>(type: "int", nullable: false),
-                    Team = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Team = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sportsmen", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sportsmen_Citizenships_CitizenshipId",
+                        column: x => x.CitizenshipId,
+                        principalTable: "Citizenships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Sportsmen_Sports_SportId",
                         column: x => x.SportId,
@@ -50,24 +69,29 @@ namespace FunGuide.Server.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Citizenships",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Ukrainian" },
+                    { 2, "Pole" },
+                    { 3, "Czech" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Sports",
                 columns: new[] { "Id", "Name" },
-                values: new object[] { 1, "Football" });
+                values: new object[,]
+                {
+                    { 1, "Football" },
+                    { 2, "MMA" },
+                    { 3, "Basketball" }
+                });
 
-            migrationBuilder.InsertData(
-                table: "Sports",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { 2, "MMA" });
-
-            migrationBuilder.InsertData(
+            migrationBuilder.CreateIndex(
+                name: "IX_Sportsmen_CitizenshipId",
                 table: "Sportsmen",
-                columns: new[] { "Id", "Age", "BirthDate", "FirstName", "Height", "LastName", "SportId", "Team", "Weight", "Citizenship" },
-                values: new object[] { 1, 22, null, "Vlad", 1.8200000000000001, "Tanasiichuk", 1, null, 75.799999999999997, "Ukrainian" });
-
-            migrationBuilder.InsertData(
-                table: "Sportsmen",
-                columns: new[] { "Id", "Age", "BirthDate", "FirstName", "Height", "LastName", "SportId", "Team", "Weight", "Citizenship" },
-                values: new object[] { 2, 21, new DateTime(2022, 4, 26, 0, 0, 0, 0, DateTimeKind.Local), "Andrey", 1.8, "Huila", 2, null, 75.299999999999997, "Ukrainian" });
+                column: "CitizenshipId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sportsmen_SportId",
@@ -79,6 +103,9 @@ namespace FunGuide.Server.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Sportsmen");
+
+            migrationBuilder.DropTable(
+                name: "Citizenships");
 
             migrationBuilder.DropTable(
                 name: "Sports");

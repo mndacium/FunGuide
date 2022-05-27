@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FunGuide.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220426175346_SportsmanMigration")]
-    partial class SportsmanMigration
+    [Migration("20220524112346_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,40 @@ namespace FunGuide.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("FunGuide.Shared.Citizenship", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Citizenships");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Ukrainian"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Pole"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Czech"
+                        });
+                });
 
             modelBuilder.Entity("FunGuide.Shared.Sport", b =>
                 {
@@ -50,6 +84,11 @@ namespace FunGuide.Server.Migrations
                         {
                             Id = 2,
                             Name = "MMA"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Basketball"
                         });
                 });
 
@@ -67,68 +106,56 @@ namespace FunGuide.Server.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CitizenshipId")
+                        .HasColumnType("int");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<double>("Height")
                         .HasColumnType("float");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("SportId")
                         .HasColumnType("int");
 
                     b.Property<string>("Team")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
-                    b.Property<string>("Citizenship")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CitizenshipId");
 
                     b.HasIndex("SportId");
 
                     b.ToTable("Sportsmen");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Age = 22,
-                            FirstName = "Vlad",
-                            Height = 1.8200000000000001,
-                            LastName = "Tanasiichuk",
-                            SportId = 1,
-                            Weight = 75.799999999999997,
-                            Citizenship = "Ukrainian"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Age = 21,
-                            BirthDate = new DateTime(2022, 4, 26, 0, 0, 0, 0, DateTimeKind.Local),
-                            FirstName = "Andrey",
-                            Height = 1.8,
-                            LastName = "Huila",
-                            SportId = 2,
-                            Weight = 75.299999999999997,
-                            Citizenship = "Ukrainian"
-                        });
                 });
 
             modelBuilder.Entity("FunGuide.Shared.Sportsman", b =>
                 {
+                    b.HasOne("FunGuide.Shared.Citizenship", "Citizenship")
+                        .WithMany()
+                        .HasForeignKey("CitizenshipId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FunGuide.Shared.Sport", "Sport")
                         .WithMany()
                         .HasForeignKey("SportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Citizenship");
 
                     b.Navigation("Sport");
                 });

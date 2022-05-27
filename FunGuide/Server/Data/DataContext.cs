@@ -18,32 +18,18 @@ namespace FunGuide.Server.Data
                 new Sport 
                 { Id = 3, Name ="Basketball"}
             );
-            modelBuilder.Entity<Sportsman>().HasData(
-                new Sportsman
-                {
-                    Id = 1,
-                    FirstName = "Vlad",
-                    LastName = "Tanasiichuk",
-                    BirthDate = null,
-                    Height = 1.82,
-                    Weight = 75.8,
-                    Citizenship = "Ukrainian",
-                    SportId=1
-                },
-                new Sportsman
-                {
-                    Id = 2,
-                    FirstName = "Andrey",
-                    LastName = "Huila",
-                    BirthDate = DateTime.Today,
-                    Height = 1.8,
-                    Weight = 75.3,
-                    Citizenship = "Ukrainian",
-                    SportId=2
-                }
-            );
+            modelBuilder.Entity<Citizenship>().HasData(
+               new Citizenship
+               { Id = 1, Name = "Ukrainian" },
+               new Citizenship
+               { Id = 2, Name = "Pole" },
+               new Citizenship
+               { Id = 3, Name = "Czech" }
+           );
+            
         }
         public DbSet<Sportsman> Sportsmen { get; set; }
         public DbSet<Sport> Sports { get; set; }
+        public DbSet<Citizenship> Citizenships { get; set; }
     }
 }

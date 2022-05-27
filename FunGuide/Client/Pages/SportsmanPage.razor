@@ -1,6 +1,8 @@
 ﻿@page "/sportsman"
 @page "/sportsman/{id:int}"
 @inject ISportsmanService SportsmanService
+@inject ISportService SportService
+@inject NavigationManager navigationManager
 
 @if (Id == null)
 {
@@ -11,6 +13,12 @@ else
 {
     <PageTitle>Edit sportsman</PageTitle>
         <h1>Edit  @middleName</h1>
+}
+@if (Id != null)
+{
+    <button class="btn alert-success" @onclick="PreviousSportsman"><i class ="oi oi-arrow-left"></i></button>
+    <button class="btn alert-success" @onclick="NextSportsman"><i class ="oi oi-arrow-right"></i></button>
+
 }
 <EditForm Model="sportsman" OnSubmit="HandleSubmit">
     <DataAnnotationsValidator/>
@@ -51,14 +59,19 @@ else
    </div> 
     <div class="col-6">
        <label>Citizenship</label>
-       <InputText id="Citizenship" @bind-Value="sportsman.Citizenship" class="form-control" ></InputText>
-       <ValidationMessage For="@(()=>sportsman.Citizenship)"></ValidationMessage>
+       <InputSelect id="Citizenship" @bind-Value="sportsman.CitizenshipId" class="form-control" >
+            @foreach(var sport in SportsmanService.Citizenships)
+            {
+                <option value="@sport.Id">@sport.Name</option>
+            }
+       </InputSelect>
+       <ValidationMessage For="@(()=>sportsman.CitizenshipId)"></ValidationMessage>
 
    </div>
    <div class="col-6">
        <label>Sport</label>
        <InputSelect id="sport" @bind-Value="sportsman.SportId" class="form-select">
-            @foreach(var sport in SportsmanService.Sports)
+            @foreach(var sport in SportService.Sports)
             {
                 <option value="@sport.Id">@sport.Name</option>
             }
@@ -89,17 +102,21 @@ else
     string btnText = string.Empty;
     string middleName = string.Empty;
     Sportsman sportsman = new Sportsman {Sport=new Sport()};
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         btnText = Id == null ? "Зберегти нового спортсмена" : "Змінити дані спортсмена";
-        
+        await SportService.GetSports();
+        await SportsmanService.GetCitizenships();
+
     }
     protected override async Task OnParametersSetAsync()
     {
         if (Id == null)
         {
-            sportsman.Sport = SportsmanService.Sports[0];
-            sportsman.SportId = sportsman.Sport.Id;
+
+            sportsman.CitizenshipId = 1;
+            sportsman.SportId = 1;
+
         }
         else
         {
@@ -122,5 +139,24 @@ else
     {
         await SportsmanService.DeleteSportsman(sportsman.Id);
     }
+    void PreviousSportsman()
+    {
+        var prev = (from x in SportsmanService.Sportsmen  where x.Id < Id orderby x.Id descending select x).FirstOrDefault();
+        if (prev != null)
+        {
+        navigationManager.NavigateTo($"/sportsman/{prev.Id}");
+            
+        }
+    }
+    void NextSportsman()
+    {
+        var next = (from x in SportsmanService.Sportsmen where x.Id > Id orderby x.Id ascending select x).FirstOrDefault();
+        if (next!=null)
+        {
+        navigationManager.NavigateTo($"/sportsman/{next.Id}");
+            
+        }
+    }
+
 
 }
