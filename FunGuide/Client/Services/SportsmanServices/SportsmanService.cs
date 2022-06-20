@@ -92,9 +92,6 @@ namespace FunGuide.Client.Services.SportsmanServices
                 $"&BirthYear={sportsmanSearchModel.BirthYear}"
 
 
-
-                );
-
                 );
 
 

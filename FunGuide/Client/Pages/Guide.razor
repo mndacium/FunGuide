@@ -102,17 +102,15 @@
                 <td>@sportsman.FirstName</td>
                 <td>@sportsman.LastName</td>
                 <td> @(sportsman.BirthDate?.ToString("dd:MM:yyyy")??"No info")</td>
-                ??"No info"
-                )
-                </td>
+
                 <td>@sportsman.Age років</td>
                 <td>@sportsman.Height м</td>
                 <td>@sportsman.Weight кг</td>
                 <td>@sportsman.Citizenship.Name</td>
                 <td>@sportsman.Sport.Name</td>
                 <td>@sportsman.Team</td>
-                <td><button class="btn btn-primary" @onclick="(()=>ShowSportsman(sportsman.Id))"><i class="oi oi-pencil"></i></button>
-        }
+                <td><button class="btn btn-primary" @onclick="(()=>ShowSportsman(sportsman.Id))"><i class="oi oi-pencil"></i></button></td>
+                </tr>        
 
         
             }
@@ -135,30 +133,16 @@
   
 @code {
 
+    protected override async Task OnInitializedAsync(){
+        await SportsmanService.GetSportsmen();
 
-        {
-
-            SportId = 0,
-            CitizenshipId = 0
-        };
-             Name=String.Empty,
-             SportId=0
-    };
-
-
-
-
-    protected override async Task OnInitializedAsync()
         await SportsmanService.GetCitizenships();
         await SportService.GetSports();
         CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US", false);
-
-
-
-    {
-
-        await SportsmanService.GetSportsmen();
     }
+
+    SportsmanSearchModel SportsmanSearch = new SportsmanSearchModel();
+
 
     public async Task SearchSportsmen(SportsmanSearchModel s)
     {
@@ -190,7 +174,10 @@
         SportsmanSearch.WeightFrom = null;
         SportsmanSearch.WeightTo = null;
         SportsmanSearch.Team = String.Empty;
-        
+        await SportsmanService.GetSportsmen();
+
+    }
+
 
     async Task DownloadPdf()
     {
@@ -201,8 +188,6 @@
 
 
     }
- }
-        await SportsmanService.GetSportsmen();
-    }
+
 }
 
