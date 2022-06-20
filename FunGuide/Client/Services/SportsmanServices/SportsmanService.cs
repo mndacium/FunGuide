@@ -95,6 +95,8 @@ namespace FunGuide.Client.Services.SportsmanServices
 
                 );
 
+                );
+
 
             if (result != null)
             {
