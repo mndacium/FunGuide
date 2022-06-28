@@ -12,11 +12,13 @@ namespace FunGuide.Server.Controllers
             _context = context;
         }
         [HttpPost]
-        public async Task<ActionResult<List<Sportsman>>> CreateSportsman(Sport sport)
-        { 
-            _context.Sports.Add(sport);
-            await _context.SaveChangesAsync();
-            return Ok(await _context.Sports.ToListAsync());
+        public async Task<ActionResult<List<Sport>>> CreateSport(Sport sport)
+        {
+                _context.Sports.Add(sport);
+                await _context.SaveChangesAsync();
+                return Ok(await _context.Sports.ToListAsync());
+            
+       
 
         }
         [HttpGet]
@@ -59,6 +61,30 @@ namespace FunGuide.Server.Controllers
             _context.Sports.Remove(dbSport);
             await _context.SaveChangesAsync();
             return Ok(await _context.Sports.ToListAsync());
+
+        }
+
+
+        [HttpGet("search")]
+        public async Task<ActionResult<List<Sportsman>>> SearchSport(string? Name)
+        {
+
+            var result = new List<Sport>();
+            var emptyList = new List<Sport>();
+
+            if (!string.IsNullOrEmpty(Name))
+            {
+                result = await _context.Sports.Where(s => s.Name.ToLower().Contains(Name.ToLower())).ToListAsync();
+                return Ok(result);
+
+            }
+            else
+            {
+                return Ok(await _context.Sports.ToListAsync());
+            }
+
+
+
 
         }
 

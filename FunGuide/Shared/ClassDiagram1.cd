@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FunGuide.Shared.Sportsman">
+    <Position X="4.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAABAAAAAAAAEAgCAQAACAAAAAAEACAAACAAAg=</HashCode>
+      <FileName>Sportsman.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FunGuide.Shared.Sport">
+    <Position X="2" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Sport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FunGuide.Shared.Citizenship">
+    <Position X="7" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Citizenship.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FunGuide.Shared.SportsmanSearchModel">
+    <Position X="9" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAABCAAAAAAAAAAEAgKAUAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>SportsmanSearchModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FunGuide.Shared.BaseEntity" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BaseEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

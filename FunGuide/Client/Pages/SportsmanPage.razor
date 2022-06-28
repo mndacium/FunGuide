@@ -7,58 +7,58 @@
 @if (Id == null)
 {
     <PageTitle>Add new sportsman</PageTitle>
-    <h1>Добавте нового спортсмена до вашого довідника </h1>
+    <h1>Додайте нового спортсмена до вашого довідника </h1>
 }
 else
 {
     <PageTitle>Edit sportsman</PageTitle>
-        <h1>Edit  @middleName</h1>
+        <h1>Редагувати  @middleName</h1>
 }
 @if (Id != null)
 {
-    <button class="btn alert-success" @onclick="PreviousSportsman"><i class ="oi oi-arrow-left"></i></button>
-    <button class="btn alert-success" @onclick="NextSportsman"><i class ="oi oi-arrow-right"></i></button>
+    <button class="btn btn-primary" @onclick="PreviousSportsman"><i class ="oi oi-arrow-left"></i></button>
+    <button class="btn btn-primary" @onclick="NextSportsman"><i class ="oi oi-arrow-right"></i></button>
 
 }
-<EditForm Model="sportsman" OnSubmit="HandleSubmit">
+<EditForm class="py-3" Model="sportsman" OnSubmit="HandleSubmit">
     <DataAnnotationsValidator/>
    <div class="col-6">
-       <label>  name</label>
+       <label>  Ім'я</label>
        <InputText id="firstName" @bind-Value="sportsman.FirstName" class="form-control" ></InputText>
        <ValidationMessage For="@(()=>sportsman.FirstName)"></ValidationMessage>
    </div>
    <div class="col-6">
-       <label>Last name</label>
+       <label>Прізвище</label>
        <InputText id="lastName" @bind-Value="sportsman.LastName" class="form-control" ></InputText>
        <ValidationMessage For="@(()=>sportsman.LastName)"></ValidationMessage>
 
    </div>
    <div class="col-6">
-       <label>Birth date</label>
+       <label>Дата народження</label>
        <InputDate id="birthDate" @bind-Value="sportsman.BirthDate" class="form-control" ></InputDate>
        <ValidationMessage For="@(()=>sportsman.BirthDate)"></ValidationMessage>
 
    </div>
    <div class="col-6">
-       <label>Age</label>
+       <label>Вік</label>
        <InputNumber id="age" @bind-Value="sportsman.Age" class="form-control"></InputNumber>
        <ValidationMessage For="@(()=>sportsman.Age)"></ValidationMessage>
 
    </div>
     <div class="col-6">
-       <label>Height</label>
+       <label>Зріст</label>
        <InputNumber id="height" @bind-Value="sportsman.Height" class="form-control" ></InputNumber>
        <ValidationMessage For="@(()=>sportsman.Height)"></ValidationMessage>
 
    </div> 
    <div class="col-6">
-       <label>Weight</label>
+       <label>Вага</label>
        <InputNumber id="weight" @bind-Value="sportsman.Weight" class="form-control" ></InputNumber>
        <ValidationMessage For="@(()=>sportsman.Weight)"></ValidationMessage>
 
    </div> 
     <div class="col-6">
-       <label>Citizenship</label>
+       <label>Громадянство</label>
        <InputSelect id="Citizenship" @bind-Value="sportsman.CitizenshipId" class="form-control" >
             @foreach(var sport in SportsmanService.Citizenships)
             {
@@ -69,7 +69,7 @@ else
 
    </div>
    <div class="col-6">
-       <label>Sport</label>
+       <label>Вид спорту</label>
        <InputSelect id="sport" @bind-Value="sportsman.SportId" class="form-select">
             @foreach(var sport in SportService.Sports)
             {
@@ -80,7 +80,7 @@ else
 
    </div>
    <div class="col-6">
-       <label>Team</label>
+       <label>Команда</label>
        <InputText id="team" @bind-Value="sportsman.Team" class="form-control"></InputText>
        <ValidationMessage For="@(()=>sportsman.Team)"></ValidationMessage>
 
@@ -89,7 +89,7 @@ else
    <button type="submit" class="btn btn-primary">@btnText</button>
     @if (Id != null)
     {
-    <button type="button" class = "btn btn-danger" @onclick="DeleteSportsman">Видалити спортсмена</button>
+    <button type="button" class = "btn btn-danger mx-3" @onclick="DeleteSportsman">Видалити спортсмена</button>
         
     }
 </EditForm>
@@ -102,7 +102,7 @@ else
     string btnText = string.Empty;
     string middleName = string.Empty;
     Sportsman sportsman = new Sportsman {Sport=new Sport()};
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync() 
     {
         btnText = Id == null ? "Зберегти нового спортсмена" : "Змінити дані спортсмена";
         await SportService.GetSports();

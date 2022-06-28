@@ -6,56 +6,93 @@
 
 <PageTitle>Види спорту</PageTitle>
 
-<div class="container">
+<div class="container ">
+    <h1 class="pb-3">Види спорту</h1>
+
     <div class="row">
         <div class="col-6">
-            <table class="table col-6" id="listOfSports">
-    <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var sport in SportService.Sports)
-        {
-            <tr>
-            <td>@sport.Name</td>
-            <td>
-            <button class="btn btn-primary" ><i class="oi oi-pencil"></i></button>
-            <button class="btn btn-warning" @onclick="(()=>DeleteSport(sport.Id))"><i class="oi oi-delete"></i></button></td>
-            </tr>
-            
-        }
-    </tbody>
+            <table class="table col-6 table-bordered" id="listOfSports">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Назва</th>
+                        <th>
+                        <td>
+                            <p>@SearchName</p>
+                           <input class="form-control"@bind-value="SearchName" @bind-value:event="oninput"/>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" @onclick="DeleteSearch"><i class="oi oi-delete"></i></button>
+                        </td>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sport in SearchSport)
+                    {
+                        string id = sport.Name;
+                        string inputId = "input" + sport.Name;
+                        string buttonId = "button" + sport.Name;
+                        string buttonIdCheck = "button" + sport.Name + "check";
 
-</table>
+                        <tr>
+                            <td>
+                                <span id="@id">@sport.Name</span>
+                                <input id="@inputId" style="display:none" type="text" class="form-control" @bind="@sport.Name">
+                            </td>
+                            <td>
+
+                                <button id="@buttonId" class="btn btn-primary" @onclick="(()=>EditSport(id,inputId,buttonId,buttonIdCheck))"><i class="oi oi-pencil"></i></button>
+                                <button id="@buttonIdCheck" class="btn btn-success" style="display:none" @onclick="(()=>UpdateSport(inputId,id,buttonIdCheck,buttonId,sport))"><i class="oi oi-check"></i></button>
+
+                                <button class="btn btn-warning" @onclick="(()=>DeleteSport(sport.Id))"><i class="oi oi-delete"></i></button>
+                            </td>
+                        </tr>
+
+                    }
+                    <tr>
+                        <td>
+                            <EditForm Model="sport" OnSubmit="CreateSport">
+                                <td>
+                                    <InputText @bind-Value="sport.Name" class="form-control"></InputText>
+                                </td>
+
+                                <td>
+                                    <button type="submit" class="btn btn-primary">Додати</button>
+                                </td>
+                            </EditForm>
+                        </td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+
 
         </div>
-        
-<div class="col-6">
-    <button class="btn btn-primary">Додати спорт до бази</button>
-    <EditForm Model="sport" OnSubmit="CreateSport">
-        <label>Назва спорту</label>
-        <InputText @bind-Value="sport.Name" class="form-control"></InputText>
-        <button type="submit" class="btn btn-primary">Додати</button>
-    </EditForm>
-</div>
+
+
     </div>
 </div>
 
 
 
 @code {
+    string SearchName = string.Empty;
     Sport sport = new Sport { };
     protected override async Task OnInitializedAsync()
-    {     
+    {
         await SportService.GetSports();
     }
-
-    public async Task SearchSportsmen(SportsmanSearchModel s)
+    public async Task SearchSport2(string Name)
     {
 
+        await SportService.SearchSport(Name);
+    }
+    public async Task DeleteSearch()
+    {
+        SearchName = String.Empty;
 
+        await SportService.GetSports();
     }
 
     public async Task DeleteSport(int id)
@@ -68,6 +105,25 @@
     }
     public async Task CreateSport()
     {
-        await SportService.CreateSport(sport);
+        if (sport != null)
+        {
+            await SportService.CreateSport(sport);
+
+        }
     }
+    async Task EditSport(string sportNameId, string changeSportNameId, string buttonId, string changeButtonId)
+    {
+        await using var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./EditSport.js");
+
+        // Generate and download the PDF
+        await module.InvokeVoidAsync("EditSport", sportNameId, changeSportNameId, buttonId, changeButtonId);
+
+
+    }
+    public async Task UpdateSport(string sportNameId, string changeSportNameId, string buttonId, string changeButtonId, Sport sport)
+    {
+        await EditSport(sportNameId, changeSportNameId, buttonId, changeButtonId);
+        await SportService.UpdateSport(sport);
+    }
+    List<Sport> SearchSport => SportService.Sports.Where(s => s.Name.ToLower().Contains(SearchName.ToLower())).ToList();
 }

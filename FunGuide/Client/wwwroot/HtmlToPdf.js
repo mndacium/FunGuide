@@ -1,5 +1,5 @@
 ﻿
-export function generateAndDownloadPdf() {
+export function generateAndDownloadPdf(filter) {
     const doc = new jspdf.jsPDF({
         orientation: 'p',
         unit: 'pt',
@@ -10,13 +10,16 @@ export function generateAndDownloadPdf() {
     doc.addFileToVFS('NotoSans-Regular-normal.ttf', font);
     doc.addFont('NotoSans-Regular-normal.ttf', 'NotoSans-Regular', 'normal');
     console.log(doc.getFontList());
-    doc.setFont("NotoSans-Regular","normal");
- 
-    doc.autoTable({
+    doc.setFont("NotoSans-Regular", "normal");
+    
+
+
+    doc.autoTable({ 
         styles: { font: "NotoSans-Regular" },
         html: "#listOfSportsmen",
         
     })
     
     doc.save("База спортсменів.pdf");
+
 }

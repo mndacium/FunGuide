@@ -1,51 +1,54 @@
 ﻿@page "/"
-@inject ISportsmanService SportsmanService;
+@using System.Reflection
 @inject ISportService SportService;
+@inject ISportsmanService SportsmanService;
 @inject IJSRuntime JSRuntime;
 @inject NavigationManager navigationManager;
 
 
 <PageTitle>Довідник фаната</PageTitle>
-<h1>База </h1>
+<h1>База   </h1>
 <EditForm Model="@SportsmanSearch">
     <DataAnnotationsValidator />
-    <div class="col-3">
+    <div class="container">
+        <div class="row">
+          <div class="col">
         <label class="col-form-label">  Ім'я</label>
         <InputText @bind-Value="@SportsmanSearch.Name"  class="form-control"/>
         <ValidationMessage For="@(()=>SportsmanSearch.Name)"></ValidationMessage>
     </div>
-    <div class="col-11">
+       <div class="col">
         <label class="col-form-label">  Рік народження</label>
-        <InputNumber class="col-1 form-control" @bind-Value="@SportsmanSearch.BirthYear" />
+        <InputNumber class="form-control form-control-sm" @bind-Value="@SportsmanSearch.BirthYear" />
         <ValidationMessage For="@(()=>SportsmanSearch.BirthYear)"></ValidationMessage>
     </div>
-    <div class="col-3">
+        <div class="col-1">
         <label class="col-form-label">  Вік</label>
         <InputNumber @bind-Value="@SportsmanSearch.Age" class="form-control" />
         <ValidationMessage For="@(()=>SportsmanSearch.Age)"></ValidationMessage>
     </div>
-    <div class="col-3">
+          <div class="col-1">
         <label class="col-form-label">  Ріст від</label>
         <InputNumber step="0.01" class="col-2 form-control" @bind-Value="@SportsmanSearch.HeightFrom" />
         <ValidationMessage For="@(()=>SportsmanSearch.HeightFrom)"></ValidationMessage>
 
         <label class="col-form-label">  До</label>
-        <InputNumber class="col-2 form-control" @bind-Value="@SportsmanSearch.HeightTo" />
+        <InputNumber  step="0.01" class="col-1 form-control form-contol-sm" @bind-Value="@SportsmanSearch.HeightTo" />
         <ValidationMessage For="@(()=>SportsmanSearch.HeightTo)"></ValidationMessage>
 
     </div>
-    <div class="col-3">
+        <div class="col-1">
         <label class="col-form-label">  Вага від</label>
-        <InputNumber class="col-2 form-control" @bind-Value="@SportsmanSearch.WeightFrom" />
+        <InputNumber class="col-1 form-control" @bind-Value="@SportsmanSearch.WeightFrom" />
         <ValidationMessage For="@(()=>SportsmanSearch.WeightFrom)"></ValidationMessage>
         <label class="col-form-label">  До</label>
         <InputNumber class="col-2 form-control" @bind-Value="@SportsmanSearch.WeightTo" />
         <ValidationMessage For="@(()=>SportsmanSearch.WeightTo)"></ValidationMessage>
 
     </div>
-    <div class="col-3">
+         <div class="col">
         <label class="col-form-label">  Громадянство</label>
-        <select class="form-select" @bind="@SportsmanSearch.CitizenshipId">
+        <select class="form-control" @bind="@SportsmanSearch.CitizenshipId">
             <option value=0>All</option>
             @foreach (var citizenship in SportsmanService.Citizenships)
             {
@@ -53,41 +56,51 @@
             }
         </select>
     </div>
-    <div class="col-3">
-        <label class="col-form-label">  Спорт</label>
-        <select class="form-select" @bind="@SportsmanSearch.SportId">
+           <div class="col">
+        <label class="col-form-label">  Вид спорту</label>
+        <select class="form-control" @bind="@SportsmanSearch.SportId">
             <option value=0>All</option>
             @foreach (var sport in SportService.Sports)
             {
-
                 <option value="@sport.Id">@sport.Name</option>
-            } 
+            }
         </select>
     </div>
-    <div class="col-3">
+        <div class="col">
         <label class="col-form-label">  Команда</label>
         <InputText @bind-Value="@SportsmanSearch.Team" class="form-control" />
         <ValidationMessage For="@(()=>SportsmanSearch.Team)"></ValidationMessage>
     </div>
+</div>
 
-    <button @onclick="(()=>SearchSportsmen(SportsmanSearch))" class="btn btn-primary"><i class="oi oi-magnifying-glass"></i></button>
-    <button @onclick="ShowDefaultTable" class = "btn btn-danger"><i class="oi oi-delete"></i></button>
+<div class="row my-5">
+    <div class="col d-flex justify-content-center">
+    <button @onclick="ShowDefaultTable" class = "btn btn-outline-danger mx-5 w-25 border-danger ">Видалити фільтри<i class=" px-3 oi oi-delete"></i></button>
+
+        <button @onclick="(()=>SearchSportsmen(SportsmanSearch))" class="btn btn-outline-primary mx-5 w-25 border-primary ">Пошук<i class="px-3 oi oi-magnifying-glass"></i></button>
+    </div>
+    
+</div>
+    </div>
+
+    
 
 </EditForm>
-
+                             
 
 <table class="table table-bordered" id="listOfSportsmen">
+
     <thead class="table-dark">
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Birth date</th>
-            <th>Age</th>
-            <th>Height</th>
-            <th>Weight</th>
-            <th>Citizenship</th>
-            <th>Sport</th>
-            <th>Team</th>
+            <th>Ім'я</th>
+            <th>Прізвище</th>
+            <th>Дата народження</th>
+            <th>Вік</th>
+            <th>Зріст</th>
+            <th>Вага</th>
+            <th>Громадянство</th>
+            <th>Вид спорту</th>
+            <th>Команда</th>
         </tr>
     </thead>
     <tbody>
@@ -102,21 +115,25 @@
                 <td>@sportsman.FirstName</td>
                 <td>@sportsman.LastName</td>
                 <td> @(sportsman.BirthDate?.ToString("dd:MM:yyyy")??"No info")</td>
-
                 <td>@sportsman.Age років</td>
                 <td>@sportsman.Height м</td>
                 <td>@sportsman.Weight кг</td>
                 <td>@sportsman.Citizenship.Name</td>
                 <td>@sportsman.Sport.Name</td>
                 <td>@sportsman.Team</td>
-                <td><button class="btn btn-primary" @onclick="(()=>ShowSportsman(sportsman.Id))"><i class="oi oi-pencil"></i></button></td>
-                </tr>        
+                <td><button class="btn btn-primary" @onclick="(()=>ShowSportsman(sportsman.Id))"><i class="oi oi-pencil"></i></button>
+                <button class="btn btn-warning" @onclick="(()=>DeleteSportsman(sportsman.Id))"><i class="oi oi-delete"></i></button></td>
+             </tr>        
 
         
-            }
-            
+        }
 
+            <tr id="filters" style="display:none">
+                <td colspan="7">Пошук за фільтрами: @Filters</td>
+                <td colspan="2">Дата @DateTime.Today.ToString("dd:MM:yyyy")</td>
 
+            </tr>
+        
 
     </tbody>
 
@@ -124,29 +141,124 @@
     <NavLink href="/sportsman" Match="NavLinkMatch.All">
         <button type="submit" class="btn btn-primary" @onclick="CreateSportsman">Додати спортсмена до бази</button>
     </NavLink>
-      <button class="btn btn-success" @onclick="DownloadPdf">
+      <button class="btn btn-success" @onclick="(()=>DownloadPdf(filters))">
             <i class="oi oi-print"></i>
      </button>
 
 
 
-  
+   
 @code {
+    string filters = "filters";
 
-    protected override async Task OnInitializedAsync(){
-        await SportsmanService.GetSportsmen();
+    protected override async Task OnInitializedAsync() {
 
-        await SportsmanService.GetCitizenships();
-        await SportService.GetSports();
         CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US", false);
+        await SportService.GetSports();
+        await SportsmanService.GetSportsmen();
+        await SportsmanService.GetCitizenships();
+        FiltersChecker();
+
     }
 
-    SportsmanSearchModel SportsmanSearch = new SportsmanSearchModel();
+    SportsmanSearchModel SportsmanSearch = new SportsmanSearchModel
+        {
+            SportId = 0,
+            CitizenshipId = 0
+        };
+    string Filters = "";
+    public void FiltersChecker()
+    {
+        Filters = "";
 
+        Type type = SportsmanSearch.GetType();
+        PropertyInfo[] properties = type.GetProperties();
+
+        foreach (PropertyInfo property in properties)
+        {
+            if (property.GetValue(SportsmanSearch, null)!=null&&property.GetValue(SportsmanSearch, null)!="")
+            {
+                if(property.Name == "SportId")
+                {
+                    if((int)property.GetValue(SportsmanSearch, null) == 0)
+                    {
+                        Filters+= ("Спорт" + ": All ");
+
+                    }
+                    else
+                    {
+                        foreach(var sport in SportService.Sports)
+                        {
+                            if((int)property.GetValue(SportsmanSearch, null) == sport.Id)
+                            {
+                                Filters+= ( "Спорт: "+sport.Name+" ");
+
+                            }
+                        }
+                    }
+                }
+                else if (property.Name=="CitizenshipId")
+                {
+
+                    if((int)property.GetValue(SportsmanSearch, null) == 0)
+                    {
+                        Filters+= ("Громадянство: " + "All ");
+
+                    }
+                    else
+                    {
+                        foreach(var citizenship in SportsmanService.Citizenships)
+                        {
+                            if((int)property.GetValue(SportsmanSearch, null) == citizenship.Id)
+                            {
+                                Filters+= ("Громадянство: "+citizenship.Name+" ");
+
+                            }
+                        }
+
+                    }
+                }
+                else if (property.Name == "BirthYear"){
+                    Filters+= ("Рік народження"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+                else if (property.Name == "Age"){
+                    Filters+= ("Вік"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+                else if (property.Name == "HeightFrom"){
+                    Filters+= ("Зріст від"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+                else if (property.Name == "HeightTo"){
+                    Filters+= ("Зріст до"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+                else if (property.Name == "WeightFrom"){
+                    Filters+= ("Вага від"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+                else if (property.Name == "WeightTo"){
+                    Filters+= ("Вага до"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+                else if (property.Name == "Name"){
+                    Filters+= ("Ім'я"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+                else if (property.Name == "Team"){
+                    Filters+= ("Назва команди"+ ": " + property.GetValue(SportsmanSearch, null)+" ");
+
+                }
+
+            }
+
+        }
+    }
 
     public async Task SearchSportsmen(SportsmanSearchModel s)
     {
-
+        FiltersChecker();
         await SportsmanService.SearchSportsmen(s);
     }
 
@@ -175,16 +287,19 @@
         SportsmanSearch.WeightTo = null;
         SportsmanSearch.Team = String.Empty;
         await SportsmanService.GetSportsmen();
+        FiltersChecker();
 
     }
 
 
-    async Task DownloadPdf()
+    async Task DownloadPdf(string filter)
     {
-        await using var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./HtmlToPdf.js");
-
-        // Generate and download the PDF
-        await module.InvokeVoidAsync("generateAndDownloadPdf");
+    await using var moduleOpener = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./EditSport.js");
+    await using var module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./HtmlToPdf.js");
+    await moduleOpener.InvokeVoidAsync("Open", filter);
+    await module.InvokeVoidAsync("generateAndDownloadPdf",filter);
+    await moduleOpener.InvokeVoidAsync("Close", filter);
+     
 
 
     }

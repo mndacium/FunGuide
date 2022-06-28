@@ -11,14 +11,18 @@ namespace FunGuide.Client.Services.SportServices
         {
             _http = http;
             _navigationManager = navigation;
-       
+
         }
-        public List<Sport> Sports { get; set; }
+        public List<Sport> Sports { get; set; } = new List<Sport>();
 
         public async Task CreateSport(Sport sport)
         {
-            var result = await _http.PostAsJsonAsync("/api/sport", sport);
-            await SetSport(result);
+            if (!string.IsNullOrEmpty(sport.Name))
+            {
+                var result = await _http.PostAsJsonAsync("/api/sport", sport);
+                await SetSport(result);
+            }
+         
         }
 
         public async Task DeleteSport(int id)
@@ -50,14 +54,25 @@ namespace FunGuide.Client.Services.SportServices
             }
             else
             {
+
                 throw new Exception("Sportsmen not found");
 
             }
         }
 
-        public Task SearchSport(string Name)
+        public async Task SearchSport(string Name)
         {
-            throw new NotImplementedException();
+            var result = await _http.GetFromJsonAsync<List<Sport>>($"/api/sport/search?" + $"Name={Name}");
+
+
+            if (result != null)
+            {
+                Sports = result;
+            }
+            else
+            {
+                throw new Exception("Search not found");
+            }
         }
 
         public async Task UpdateSport(Sport sport)
