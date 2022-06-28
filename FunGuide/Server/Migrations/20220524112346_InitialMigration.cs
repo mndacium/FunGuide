@@ -14,7 +14,7 @@ namespace FunGuide.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -75,7 +75,10 @@ namespace FunGuide.Server.Migrations
                 {
                     { 1, "Ukrainian" },
                     { 2, "Pole" },
-                    { 3, "Czech" }
+                    { 3, "Czech" },
+            
+
+
                 });
 
             migrationBuilder.InsertData(

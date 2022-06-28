@@ -10,6 +10,7 @@ namespace FunGuide.Server.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<Sport>().HasData(
                 new Sport
                 { Id = 1, Name = "Football" },
@@ -18,15 +19,23 @@ namespace FunGuide.Server.Data
                 new Sport 
                 { Id = 3, Name ="Basketball"}
             );
+
             modelBuilder.Entity<Citizenship>().HasData(
                new Citizenship
                { Id = 1, Name = "Ukrainian" },
                new Citizenship
                { Id = 2, Name = "Pole" },
                new Citizenship
-               { Id = 3, Name = "Czech" }
+               { Id = 3, Name = "Czech" },
+               new Citizenship 
+               { Id = 4, Name ="American"},
+               new Citizenship
+               { Id = 5, Name = "Portuguese" },
+               new Citizenship
+               { Id = 6, Name = "Irishman" }
            );
-            
+
+    
         }
         public DbSet<Sportsman> Sportsmen { get; set; }
         public DbSet<Sport> Sports { get; set; }
